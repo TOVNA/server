@@ -2,7 +2,6 @@ import initApp from "./server";
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
-const port = process.env.PORT;
 
 console.log("app starting...");
 initApp().then((app) => {
