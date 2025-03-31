@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, ObjectId } from 'mongoose';
 
-export interface IAiGoal extends Document{
+export interface IGoal extends Document{
     student_id: ObjectId;
     generated_by_ai: boolean;
     goals: {
@@ -12,7 +12,7 @@ export interface IAiGoal extends Document{
     created_at: Date;
 }
 
-const aiGoalSchema = new Schema<IAiGoal>({
+const GoalSchema = new Schema<IGoal>({
     student_id: {type: Schema.Types.ObjectId, ref: 'Student'},
     generated_by_ai: {type: Boolean, required: true},
     goals: [{
@@ -24,5 +24,5 @@ const aiGoalSchema = new Schema<IAiGoal>({
     created_at: {type: Date, default: Date.now}
 });
 
-const aiGoalModel = mongoose.model<IAiGoal>('AiGoal', aiGoalSchema);
-export default aiGoalModel;
+const GoalModel = mongoose.model<IGoal>('Goal', GoalSchema);
+export default GoalModel;
