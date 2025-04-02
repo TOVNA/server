@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import ClassModel from '../models/classModel';
-import StudentModel from '../models/studentModel';
-import UserModel from '../models/userModel';
 
 
 const getClassById = async (req: Request, res: Response): Promise<void> => {
@@ -18,33 +16,6 @@ const getClassById = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-const getStudentsByClassId = async (req: Request, res: Response): Promise<void> => {
-    const class_id = req.params.id;
-    try {
-        const students = await StudentModel.find({ class_id }).populate('class_id');
-        res.status(200).json(students);
-    } catch (error) {
-        console.error("Error fetching students by class:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
-const getTeachersByClassId = async (req: Request, res: Response): Promise<void> =>
-  { const class_id = req.params.id;
-try {
-  const teachers = await UserModel.find({
-    role: { $in: ['teacher', 'homeroom'] },
-    $or: [
-      { homeroom_classes: class_id },
-      { 'subject_classes.class_id': class_id }
-    ]
-  });
-
-  res.status(200).json(teachers);
-} catch (error) {
-  console.error("Error fetching teachers by class:", error);
-  res.status(500).json({ message: "Internal server error" });
-    }
-  }
 
 const createClass = async (req: Request, res: Response): Promise<void> => {
     const { name, students, teachers } = req.body;
@@ -99,8 +70,6 @@ const getAllClasses = async (req: Request, res: Response): Promise<void> => {
 export default
 {
     getClassById,
-    getStudentsByClassId,
-    getTeachersByClassId,
     createClass,
     updateClass,
     deleteClass,
