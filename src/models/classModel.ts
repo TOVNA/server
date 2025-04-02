@@ -1,16 +1,18 @@
-import mongoose, { Schema, Document, ObjectId } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IClass extends Document {
   name: string;
-  students: ObjectId[];
-  created_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
-const classSchema = new Schema<IClass>({
-  name: { type: String, required: true },
-  students: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-  created_at: { type: Date, default: Date.now },
-});
+const classSchema = new Schema<IClass>(
+  {
+    name: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const classModel = mongoose.model<IClass>('Class', classSchema);
-export default classModel;
+export default mongoose.model<IClass>('Class', classSchema);

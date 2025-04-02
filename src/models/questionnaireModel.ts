@@ -1,29 +1,40 @@
-import mongoose, { Schema, Document, ObjectId } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IQuestionnaire extends Document{
-    title: string;
-    description: string;
-    questions: {
-        _id: ObjectId;
-        text: string;
-        type: string;
-        scale?: number;
-        options?: string[];
-    }[];
-    created_at: Date;
+export interface IQuestion {
+  text: string;
+  type: 'text' | 'scale' | 'multiple_choice';
+  scale?: number;
+  options?: string[];
 }
 
-const questionnaireSchema = new Schema<IQuestionnaire>({
-    title: {type: String, required: true},
-    description: String,
-    questions: [{
-        text: {type: String, required: true},
-        type: {type: String, required: true},
-        scale: Number,
-        options: [String]
-    }],
-    created_at: {type: Date, default: Date.now}
-});
+export interface IQuestionnaire extends Document {
+  title: string;
+  description?: string;
+  targetRole: 'teacher' | 'homeroom';
+  questions: IQuestion[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
-const questionnaireModel = mongoose.model<IQuestionnaire>('Questionnaire', questionnaireSchema);
-export default questionnaireModel;
+const questionnaireSchema = new Schema<IQuestionnaire>(
+  {
+    title: { type: String, required: true },
+    description: { type: String },
+    targetRole: {
+      type: String,
+      enum: ['teacher', 'homeroom'],
+      required: true,
+    },
+    questions: [
+      {
+        text: { type: String, required: true },
+        type: { type: String, enum: ['text', 'scale', 'multiple_choice'], required: true },
+        scale: Number,
+        options: [String],
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model<IQuestionnaire>('Questionnaire', questionnaireSchema);
