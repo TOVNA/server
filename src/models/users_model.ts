@@ -1,19 +1,14 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-export interface IUser extends Document {
+export interface IUser  {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
   role: 'admin' | 'teacher' | 'homeroom';
-  homeroom_classes: mongoose.Types.ObjectId[];
-  subject_classes: {
-    class_id: mongoose.Types.ObjectId;
-    subject: string;
-  }[];
-  refreshTokens: string[];
   created_at?: Date;
   updated_at?: Date;
+  refreshToken?: string[];
 }
 
 const userSchema = new Schema<IUser>(
@@ -35,19 +30,13 @@ const userSchema = new Schema<IUser>(
       enum: ['admin', 'teacher', 'homeroom'],
       default: 'teacher'
     },
-    homeroom_classes:
-     [{ type: Schema.Types.ObjectId, ref: 'Class' }],
-    subject_classes: [
-      {
-        class_id: { type: Schema.Types.ObjectId, ref: 'Class' },
-        subject: { type: String }
-      }
-    ],
-    refreshTokens: [{ type: String, default: [] }]
+    refreshToken: { type: [String], default: [] },
   },
   {
     timestamps: true,
   }
+
 );
 
-export default mongoose.model<IUser>('User', userSchema);
+const UserModel = mongoose.model<IUser>('User', userSchema);
+export default UserModel;

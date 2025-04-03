@@ -1,5 +1,5 @@
 // models/Goal.ts
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 export interface ISubGoal {
   text: string;
@@ -10,7 +10,7 @@ export interface ISubGoal {
   achievedAt?: Date;
 }
 
-export interface IGoal extends Document {
+export interface IGoal  {
   student_id: Types.ObjectId;
   createdBy: Types.ObjectId;
   generated_by_ai: boolean;
@@ -38,4 +38,6 @@ const goalSchema = new Schema<IGoal>(
   { timestamps: true }
 );
 
-export default mongoose.model<IGoal>('Goal', goalSchema);
+const GoalModel = mongoose.model<IGoal>('Goal', goalSchema);
+export default GoalModel;
+

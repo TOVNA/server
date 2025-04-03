@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import studentModel from '../models/studentModel';
+import studentModel from '../models/students_model';
 
 const getStudentById = async (req: Request, res: Response):  Promise<void> => {
     const student_id = req.params.id;
