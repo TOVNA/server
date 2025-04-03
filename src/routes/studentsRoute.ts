@@ -28,15 +28,11 @@ const router = express.Router();
  *         birtdh_date:
  *           type: Date
  *           description: the birth date of the student
- *         classId:
- *           type: string
- *           description: The ID of the class the student belongs to
  *       required:
  *         - id
  *         - first_name
  *         - last_name
  *         - birth_date
- *         - classId
  */
 /**
  * @swagger
@@ -61,31 +57,5 @@ const router = express.Router();
  *         description: Student not found
  */
 router.get('/:id', studentsController.getStudentById);
-
-/**
- * @swagger 
- * /students/class/:classId:
- *   get:
- *     summary: Get students by class ID
- *     parameters:
- *       - in: path
- *         name: classId
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the class
- *     responses:
- *       200:
- *         description: A list of students
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Student'
- *       404:
- *         description: Class not found
- */
-router.get('/class/:classId', studentsController.getStudentsByClass);
 
 export default router;
