@@ -1,7 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
 
 export interface ITeacher {
-  userId: Types.ObjectId; // ref: 'User'
+  userId: Types.ObjectId;
   types: ('profession' | 'homeroom')[];
 }
 
