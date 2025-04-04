@@ -8,6 +8,7 @@ import swaggerUI from "swagger-ui-express";
 import cors from "cors";
 import studentsRoute from "./routes/studentsRoute";
 import schoolClass_route from "./routes/schoolClass_route";
+import teachersRoute from "./routes/teachers_route";
 
 const app: Express = express();
 
@@ -30,7 +31,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/students", studentsRoute);
-app.use("/api/schoolClass", schoolClass_route);
+app.use("/teachers", teachersRoute);
+app.use("/school-class", schoolClass_route);
 
 
 const db = mongoose.connection;
