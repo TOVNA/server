@@ -8,20 +8,21 @@ import swaggerUI from "swagger-ui-express";
 import cors from "cors";
 import studentsRoute from "./routes/studentsRoute";
 import goalsRoute from "./routes/goalsRoute";
+import schoolClass_route from "./routes/schoolClass_route";
 
 const app: Express = express();
 
 const swaggerOptions: swaggerJSDoc.Options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'TOVNA 2025 REST API',
-      version: '1.0.0',
-      description: 'REST server for TOVNA project',
+      title: "TOVNA 2025 REST API",
+      version: "1.0.0",
+      description: "REST server for TOVNA project",
     },
-    servers: [{ url: `http://localhost:${process.env.PORT}`}], 
+    servers: [{ url: `http://localhost:${process.env.PORT}` }],
   },
-  apis: ['./src/routes/*.ts'], 
+  apis: ["./src/routes/*.ts"],
 };
 const specs = swaggerJSDoc(swaggerOptions);
 
@@ -31,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/students", studentsRoute);
 app.use("/goals", goalsRoute);
+app.use("/api/schoolClass", schoolClass_route);
 
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
@@ -48,7 +50,9 @@ const initApp = async (): Promise<Express> => {
     if (error instanceof Error) {
       throw new Error("Failed to connect to MongoDB: " + error.message);
     } else {
-      throw new Error("Failed to connect to MongoDB: An unknown error occurred");
+      throw new Error(
+        "Failed to connect to MongoDB: An unknown error occurred"
+      );
     }
   }
 };
