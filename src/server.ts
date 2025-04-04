@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/students", studentsRoute);
 app.use("/teachers", teachersRoute);
-app.use("/api/schoolClass", schoolClass_route);
+app.use("/schoolClass", schoolClass_route);
 
 
 const db = mongoose.connection;
