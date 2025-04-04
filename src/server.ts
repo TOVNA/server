@@ -9,6 +9,7 @@ import cors from "cors";
 import studentsRoute from "./routes/studentsRoute";
 import goalsRoute from "./routes/goalsRoute";
 import schoolClass_route from "./routes/schoolClass_route";
+import teachersRoute from "./routes/teachers_route";
 
 const app: Express = express();
 
@@ -32,7 +33,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/students", studentsRoute);
 app.use("/goals", goalsRoute);
-app.use("/api/schoolClass", schoolClass_route);
+app.use("/teachers", teachersRoute);
+app.use("/school-class", schoolClass_route);
 
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
