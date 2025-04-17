@@ -1,6 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import authController from '../controllers/auth_controller';
+import { authMiddleware } from '../controllers/auth_controller';
 
 /**
  * @swagger
@@ -53,7 +54,7 @@ router.post('/login', authController.login);
  *       400:
  *         description: Failed logout
  */
-router.post('/logout', authController.logout);
+router.post('/logout',authMiddleware,authController.logout);
 
 /**
  * @swagger
