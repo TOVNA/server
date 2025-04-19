@@ -4,8 +4,48 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Document, Types } from 'mongoose';
 import TeacherModel from '../models/teachers_model';
+import { OAuth2Client } from 'google-auth-library';
 
+const client = new OAuth2Client();
 
+const googleSignin = async (req: Request, res: Response) => {
+    const credential = req.body.credential;
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        console.log(payload);
+        const email = payload?.email;
+        if (email != null) {
+            let user = await userModel.findOne({ email: email });
+            if (user == null) {
+                user = await userModel.create({
+                    email: email,
+                    password: new Types.ObjectId().toHexString(),
+                    first_name: payload?.given_name,
+                    last_name: payload?.family_name,
+                    role: 'teacher'
+                });
+            }
+            const tokens = generateToken(user._id.toString());
+            if (!tokens) {
+                res.status(500).send('Server Error');
+                return;
+            }
+            res.status(200).send({
+                userId: user._id,
+                email: user.email,
+                ...tokens
+            });
+        }
+
+    } catch (err) {
+        console.error(err);
+        return res.status(400).send("error missing email or password");
+    }
+ }
 
 const register = async (req: Request, res: Response) => {
     try {
@@ -217,6 +257,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 };
 
 export default {
+    googleSignin,
     register,
     login,
     refresh,
