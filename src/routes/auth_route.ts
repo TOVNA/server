@@ -5,6 +5,49 @@ import { authMiddleware } from '../controllers/auth_controller';
 
 /**
  * @swagger
+ * /auth/google:
+ *   post:
+ *     summary: Authenticate user via Google Sign-In
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               credential:
+ *                 type: string
+ *                 description: Google ID token (from the frontend)
+ *             required:
+ *               - credential
+ *             example:
+ *               credential: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *     responses:
+ *       200:
+ *         description: Authentication successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 accessToken:
+ *                   type: string
+ *                 refreshToken:
+ *                   type: string
+ *       400:
+ *         description: Invalid Google token or missing credential
+ *       500:
+ *         description: Server error
+ */
+router.post('/google', authController.googleSignin);
+
+/**
+ * @swagger
  * /auth/login:
  *   post:
  *     summary: Login with email and password
@@ -30,6 +73,8 @@ import { authMiddleware } from '../controllers/auth_controller';
  *         description: Wrong credentials
  */
 router.post('/login', authController.login);
+
+
 
 /**
  * @swagger
