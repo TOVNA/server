@@ -54,4 +54,6 @@ const router = express.Router();
  */
 router.get('/:id', teacherController.getTeacherById);
 
+router.get('/', teacherController.getAllTeachers);
+
 export default router;

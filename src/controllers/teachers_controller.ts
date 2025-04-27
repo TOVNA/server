@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import  teacherModel from '../models/teachers_model';
-import * as teacherService from '../services/teachers_service';
+import  teacherService from '../services/teachers_service';
 
 const getTeacherById = async (req: Request, res: Response) => {
     const teacher_id = req.params.id;
@@ -16,8 +16,19 @@ const getTeacherById = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const getAllTeachers = async (req: Request, res: Response) => {
+    try {
+        const teachers = await teacherService.getAllTeachers();
+        res.status(200).json(teachers);
+    } catch (error) {
+        console.error('Error fetching teachers:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 
 
 export default {
     getTeacherById,
+    getAllTeachers
 };

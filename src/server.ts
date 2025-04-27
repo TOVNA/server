@@ -10,6 +10,8 @@ import studentsRoute from "./routes/studentsRoute";
 import goalsRoute from "./routes/goalsRoute";
 import schoolClass_route from "./routes/schoolClass_route";
 import teachersRoute from "./routes/teachers_route";
+import authRouter from "./routes/auth_route";
+
 
 const app: Express = express();
 
@@ -35,6 +37,8 @@ app.use("/students", studentsRoute);
 app.use("/goals", goalsRoute);
 app.use("/teachers", teachersRoute);
 app.use("/school-class", schoolClass_route);
+app.use("/auth", authRouter);
+
 
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
