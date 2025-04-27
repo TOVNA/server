@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { AuthenticatedRequest } from '../types/express';
 import userModel, { IUser } from '../models/users_model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -29,7 +30,7 @@ const googleSignin = async (req: Request, res: Response) => {
                     role: 'teacher'
                 });
             }
-            const tokens = generateToken(user._id.toString());
+            const tokens = generateToken(user._id.toString(), user.role);
             if (!tokens) {
                 res.status(500).send('Server Error');
                 return;
@@ -88,14 +89,14 @@ type tTokens = {
     refreshToken: string
 }
 
-const generateToken = (userId: string): tTokens | null => {
+const generateToken = (userId: string, role: 'admin' | 'teacher' | 'homeroom'): tTokens | null => {
     const secret = process.env.TOKEN_SECRET;
     if (!secret) {
         throw new Error("TOKEN_SECRET is not defined");
     }
 
     const random = Math.random().toString();
-    const accessToken = jwt.sign({ _id: userId }, secret, { expiresIn: '3d' });
+    const accessToken = jwt.sign({ _id: userId, role }, secret, { expiresIn: '3d' });
 
     const refreshToken = jwt.sign({ _id: userId, random }, secret, { expiresIn: '7d' });
 
@@ -122,7 +123,7 @@ const login = async (req: Request, res: Response) => {
             res.status(500).send('Server Error');
             return;
         }
-        const tokens = generateToken(user._id.toString());
+        const tokens = generateToken(user._id.toString(), user.role);
         if (!tokens) {
             res.status(500).send('Server Error');
             return;
@@ -209,7 +210,7 @@ const refresh = async (req: Request, res: Response) => {
             res.status(400).send("fail1");
             return;
         }
-        const tokens = generateToken(user._id.toString());
+        const tokens = generateToken(user._id.toString(), user.role);
 
         if (!tokens) {
             res.status(500).send('Server Error');
@@ -233,9 +234,10 @@ const refresh = async (req: Request, res: Response) => {
 
 type Payload = {
     _id: string;
+    role: 'admin' | 'teacher' | 'homeroom';
 };
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const token = req.headers['authorization']
     if (!token) {
         res.status(401).send('Access Denied');
@@ -251,7 +253,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
             res.status(401).send('Access Denied');
             return;
         }
-        req.params.userId = (payload as Payload)._id;
+        const { _id, role } = payload as { _id: string, role: 'admin' | 'teacher' | 'homeroom' };
+        req.user = { _id, role };
         next();
     });
 };
