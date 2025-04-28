@@ -16,6 +16,7 @@ const getTeacherById = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 const getAllTeachers = async (req: Request, res: Response) => {
     try {
         const teachers = await teacherService.getAllTeachers();
@@ -24,11 +25,62 @@ const getAllTeachers = async (req: Request, res: Response) => {
         console.error('Error fetching teachers:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
+const createTeacher = async (req: Request, res: Response) => {
+    try {
+        const { userId, types } = req.body;
+        if (!userId || !types || !Array.isArray(types)) {
+            res.status(400).json({ message: 'Invalid request body' });
+            return;
+        }
+        const newTeacher = await teacherService.createTeacher(userId, types);
+        res.status(201).json(newTeacher);
+    } catch (error) {
+        console.error('Error creating teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
+const updateTeacher = async (req: Request, res: Response) => {
+    const teacherId = req.params.id;
+    try {
+        const { types } = req.body;
+        if (!types || !Array.isArray(types)) {
+            res.status(400).json({ message: 'Invalid request body' });
+            return;
+        }
+        const updatedTeacher = await teacherService.updateTeacher(teacherId, types);
+        if (!updatedTeacher) {
+            res.status(404).json({ message: 'Teacher not found' });
+            return;
+        }
+        res.status(200).json(updatedTeacher);
+    } catch (error) {
+        console.error('Error updating teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const deleteTeacher = async (req: Request, res: Response) => {
+    const teacherId = req.params.id;
+    try {
+        const deleted = await teacherService.deleteTeacher(teacherId);
+        if (!deleted) {
+            res.status(404).json({ message: 'Teacher not found' });
+            return;
+        }
+        res.status(200).json({ message: 'Teacher deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting teacher:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 export default {
     getTeacherById,
-    getAllTeachers
+    getAllTeachers,
+    createTeacher,
+    updateTeacher,
+    deleteTeacher,
 };

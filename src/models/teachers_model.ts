@@ -1,8 +1,9 @@
 import mongoose, { Schema, Types } from 'mongoose';
+import { TeacherType } from '../types/teacher';
 
 export interface ITeacher {
   userId: Types.ObjectId;
-  types: ('profession' | 'homeroom')[];
+  types: TeacherType[];
 }
 
 const teacherSchema = new Schema<ITeacher>(
@@ -14,7 +15,7 @@ const teacherSchema = new Schema<ITeacher>(
     },
     types: [{
       type: String,
-      enum: ['profession', 'homeroom'],
+      enum:  Object.values(TeacherType),
       required: true
     }]
   },
