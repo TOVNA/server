@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
+import { AuthenticatedRequest } from '../types/express';
 import userModel, { IUser } from '../models/users_model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Document, Types } from 'mongoose';
 import TeacherModel from '../models/teachers_model';
 import { OAuth2Client } from 'google-auth-library';
+import { Role } from '../types/roles';
 
 const client = new OAuth2Client();
 
@@ -29,7 +31,7 @@ const googleSignin = async (req: Request, res: Response) => {
                     role: 'teacher'
                 });
             }
-            const tokens = generateToken(user._id.toString());
+            const tokens = generateToken(user._id.toString(), user.role);
             if (!tokens) {
                 res.status(500).send('Server Error');
                 return;
@@ -88,14 +90,14 @@ type tTokens = {
     refreshToken: string
 }
 
-const generateToken = (userId: string): tTokens | null => {
+const generateToken = (userId: string, role: Role): tTokens | null => {
     const secret = process.env.TOKEN_SECRET;
     if (!secret) {
         throw new Error("TOKEN_SECRET is not defined");
     }
 
     const random = Math.random().toString();
-    const accessToken = jwt.sign({ _id: userId }, secret, { expiresIn: '3d' });
+    const accessToken = jwt.sign({ _id: userId, role }, secret, { expiresIn: '3d' });
 
     const refreshToken = jwt.sign({ _id: userId, random }, secret, { expiresIn: '7d' });
 
@@ -122,7 +124,7 @@ const login = async (req: Request, res: Response) => {
             res.status(500).send('Server Error');
             return;
         }
-        const tokens = generateToken(user._id.toString());
+        const tokens = generateToken(user._id.toString(), user.role);
         if (!tokens) {
             res.status(500).send('Server Error');
             return;
@@ -209,7 +211,7 @@ const refresh = async (req: Request, res: Response) => {
             res.status(400).send("fail1");
             return;
         }
-        const tokens = generateToken(user._id.toString());
+        const tokens = generateToken(user._id.toString(), user.role);
 
         if (!tokens) {
             res.status(500).send('Server Error');
@@ -233,14 +235,25 @@ const refresh = async (req: Request, res: Response) => {
 
 type Payload = {
     _id: string;
+    role: Role;
 };
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers['authorization']
-    if (!token) {
+export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const tokenBearer = req.headers['authorization']
+    if (!tokenBearer) {
+        console.log("no token - in middleware");
         res.status(401).send('Access Denied');
         return;
     }
+
+    var token = '';
+    if (tokenBearer.includes("Bearer")) {
+        // The token is Bearer xxxxx so the split removes the Bearer
+        token = tokenBearer.split(' ')[1];
+    } else {
+        token = tokenBearer;
+    }
+
     if (!process.env.TOKEN_SECRET) {
         res.status(500).send('Server Error');
         return;
@@ -251,7 +264,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
             res.status(401).send('Access Denied');
             return;
         }
-        req.params.userId = (payload as Payload)._id;
+        const { _id, role } = payload as { _id: string, role: Role };
+        req.user = { _id, role };
         next();
     });
 };

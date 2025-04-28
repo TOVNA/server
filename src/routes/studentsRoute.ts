@@ -1,5 +1,7 @@
 import express from 'express';
 import studentsController from '../controllers/studentsController';
+import { authMiddleware } from '../controllers/auth_controller';
+import { isAdmin } from '../middleware/isAdmin';
 
 const router = express.Router();
 
@@ -57,5 +59,109 @@ const router = express.Router();
  *         description: Student not found
  */
 router.get('/:id', studentsController.getStudentById);
+
+/**
+ * @swagger
+ * /students/{id}:
+ *   delete:
+ *     summary: Delete a student
+ *     tags: [Students]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the student to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Student deleted successfully
+ *       404:
+ *         description: Student not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/:id', authMiddleware, isAdmin, studentsController.deleteStudent);
+
+/**
+ * @swagger
+ * /students:
+ *   post:
+ *     summary: Create a new student
+ *     tags: [Students]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id_number
+ *               - first_name
+ *               - last_name
+ *               - birth_date
+ *             properties:
+ *               id_number:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               birth_date:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       201:
+ *         description: Student created successfully
+ *       500:
+ *         description: server error
+ */
+router.post('/', authMiddleware, isAdmin, studentsController.createStudent);
+
+/**
+ * @swagger
+ * /students/{id}:
+ *   put:
+ *     summary: Update an existing student
+ *     tags: [Students]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the student to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_number:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               birth_date:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       200:
+ *         description: Student updated successfully
+ *       404:
+ *         description: Student not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/:id', authMiddleware, isAdmin, studentsController.updateStudent);
+
 
 export default router;
