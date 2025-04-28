@@ -238,11 +238,21 @@ type Payload = {
 };
 
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const token = req.headers['authorization']
-    if (!token) {
+    const tokenBearer = req.headers['authorization']
+    if (!tokenBearer) {
+        console.log("no token - in middleware");
         res.status(401).send('Access Denied');
         return;
     }
+
+    var token = '';
+    if (tokenBearer.includes("Bearer")) {
+        // The token is Bearer xxxxx so the split removes the Bearer
+        token = tokenBearer.split(' ')[1];
+    } else {
+        token = tokenBearer;
+    }
+
     if (!process.env.TOKEN_SECRET) {
         res.status(500).send('Server Error');
         return;
