@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import { Document, Types } from 'mongoose';
 import TeacherModel from '../models/teachers_model';
 import { OAuth2Client } from 'google-auth-library';
+import { Role } from '../types/roles';
 
 const client = new OAuth2Client();
 
@@ -89,7 +90,7 @@ type tTokens = {
     refreshToken: string
 }
 
-const generateToken = (userId: string, role: 'admin' | 'teacher' | 'homeroom'): tTokens | null => {
+const generateToken = (userId: string, role: Role): tTokens | null => {
     const secret = process.env.TOKEN_SECRET;
     if (!secret) {
         throw new Error("TOKEN_SECRET is not defined");
@@ -234,7 +235,7 @@ const refresh = async (req: Request, res: Response) => {
 
 type Payload = {
     _id: string;
-    role: 'admin' | 'teacher' | 'homeroom';
+    role: Role;
 };
 
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -263,7 +264,7 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
             res.status(401).send('Access Denied');
             return;
         }
-        const { _id, role } = payload as { _id: string, role: 'admin' | 'teacher' | 'homeroom' };
+        const { _id, role } = payload as { _id: string, role: Role };
         req.user = { _id, role };
         next();
     });

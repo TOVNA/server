@@ -1,11 +1,12 @@
 import mongoose, { Schema } from 'mongoose';
+import { Role } from '../types/roles';
 
 export interface IUser  {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
-  role: 'admin' | 'teacher' | 'homeroom';
+  role: Role;
   created_at?: Date;
   updated_at?: Date;
   refreshToken?: string[];
@@ -27,8 +28,8 @@ const userSchema = new Schema<IUser>(
          required: false },
     role: {
       type: String,
-      enum: ['admin', 'teacher', 'homeroom'],
-      default: 'teacher'
+      enum: Object.values(Role),
+      default: Role.Teacher
     },
     refreshToken: { type: [String], default: [] },
   },
