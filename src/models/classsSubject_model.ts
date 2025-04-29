@@ -18,5 +18,5 @@ const classSubjectSchema = new Schema<IClassSubject>(
     }
 );
 
-const ClassModel= mongoose.model<IClassSubject>('ClassSubject', classSubjectSchema);
-export default ClassModel;
+const ClassSubjectModel= mongoose.model<IClassSubject>('ClassSubject', classSubjectSchema);
+export default ClassSubjectModel;
