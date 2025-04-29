@@ -1,5 +1,7 @@
 import express from 'express';
 import teacherController from '../controllers/teachers_controller';
+import { authMiddleware } from '../controllers/auth_controller';
+import { isAdmin } from '../middleware/isAdmin';
 
 const router = express.Router();
 
@@ -54,6 +56,117 @@ const router = express.Router();
  */
 router.get('/:id', teacherController.getTeacherById);
 
+/**
+ * @swagger
+ * /teachers:
+ *   get:
+ *     summary: Get all teachers
+ *     tags: [Teachers]
+ *     responses:
+ *       200:
+ *         description: A list of teachers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Teacher'
+ */
 router.get('/', teacherController.getAllTeachers);
+
+/**
+ * @swagger
+ * /teachers:
+ *   post:
+ *     summary: Create a new teacher
+ *     tags: [Teachers]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - types
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               types:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [profession, homeroom]
+ *     responses:
+ *       201:
+ *         description: Teacher created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Teacher'
+ *       400:
+ *         description: Bad request
+ */
+router.post('/', authMiddleware, isAdmin, teacherController.createTeacher);
+
+/**
+ * @swagger
+ * /teachers/{id}:
+ *   put:
+ *     summary: Update an existing teacher
+ *     tags: [Teachers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Teacher ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               types:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [profession, homeroom]
+ *     responses:
+ *       200:
+ *         description: Teacher updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Teacher'
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Teacher not found
+ */
+router.put('/:id', authMiddleware, isAdmin, teacherController.updateTeacher);
+
+/**
+ * @swagger
+ * /teachers/{id}:
+ *   delete:
+ *     summary: Delete a teacher by ID
+ *     tags: [Teachers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the teacher
+ *     responses:
+ *       200:
+ *         description: Teacher deleted successfully
+ *       404:
+ *         description: Teacher not found
+ */
+router.delete('/:id', authMiddleware, isAdmin, teacherController.deleteTeacher);
 
 export default router;
