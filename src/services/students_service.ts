@@ -14,7 +14,7 @@ export const createStudent = async (studentData: IStudent) => {
   await student.save();
 
   if (studentData.class_id) {
-    updateStudentClassRelation(
+    await updateStudentClassRelation(
       student._id.toString(),
       undefined,
       studentData.class_id.toString()
@@ -26,21 +26,19 @@ export const createStudent = async (studentData: IStudent) => {
 
 export const updateStudent = async (id: string, studentData: IStudent) => {
   const student = await students.findById(id);
+
   if (!student) {
     throw new Error("Student not found");
   }
 
   const oldClassId = student.class_id;
-
-  // Update student fields
   student.first_name = studentData.first_name || student.first_name;
   student.last_name = studentData.last_name || student.last_name;
   student.birth_date = studentData.birth_date || student.birth_date;
   student.class_id = studentData.class_id;
 
   await student.save();
-
-  updateStudentClassRelation(
+  await updateStudentClassRelation(
     student._id.toString(),
     oldClassId?.toString(),
     studentData?.class_id?.toString()
