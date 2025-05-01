@@ -1,52 +1,67 @@
-import students, { IStudent } from '../models/students_model';
+import students, { IStudent } from "../models/students_model";
+import { updateStudentClassRelation } from "./schoolClass_serv";
 
 export const getStudentById = async (student_id: string) => {
-  return await students.findById(student_id);
+  return await students.findById(student_id).populate("class_id");
+};
+
+export const getAllStudents = async () => {
+  return await students.find().populate("class_id");
 };
 
 export const createStudent = async (studentData: IStudent) => {
-    const id_number = studentData.id_number;
+  const student = new students(studentData);
+  await student.save();
 
-    // Check if student with the same ID already exists
-    const existingStudent = await students.findOne({ id_number });
-    if (existingStudent) {
-        throw new Error('Student with this ID already exists');
-    }
+  if (studentData.class_id) {
+    updateStudentClassRelation(
+      student._id.toString(),
+      undefined,
+      studentData.class_id.toString()
+    );
+  }
 
-    // Create and save the new student
-    const student = new students(studentData);
-    await student.save();
-    return student;
+  return student;
 };
 
 export const updateStudent = async (id: string, studentData: IStudent) => {
-    const student = await students.findById(id);
-    if (!student) {
-        throw new Error('Student not found');
-    }
+  const student = await students.findById(id);
+  if (!student) {
+    throw new Error("Student not found");
+  }
 
-    // Update student fields
-    student.id_number = studentData.id_number || student.id_number;
-    student.first_name = studentData.first_name || student.first_name;
-    student.last_name = studentData.last_name || student.last_name;
-    student.birth_date = studentData.birth_date || student.birth_date;
+  const oldClassId = student.class_id;
 
-    await student.save();
-    return student;
+  // Update student fields
+  student.first_name = studentData.first_name || student.first_name;
+  student.last_name = studentData.last_name || student.last_name;
+  student.birth_date = studentData.birth_date || student.birth_date;
+  student.class_id = studentData.class_id;
+
+  await student.save();
+
+  updateStudentClassRelation(
+    student._id.toString(),
+    oldClassId?.toString(),
+    studentData?.class_id?.toString()
+  );
+
+  return student;
 };
 
 export const deleteStudent = async (id: string) => {
-    const student = await students.findById(id);
-    if (!student) {
-        throw new Error('Student not found');
-    }
+  const student = await students.findById(id);
+  if (!student) {
+    throw new Error("Student not found");
+  }
 
-    await students.deleteOne({ _id: student._id });
+  await students.deleteOne({ _id: student._id });
 };
 
 export default {
   getStudentById,
   createStudent,
   updateStudent,
-  deleteStudent
+  deleteStudent,
+  getAllStudents,
 };
