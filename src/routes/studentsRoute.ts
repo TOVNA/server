@@ -1,7 +1,7 @@
-import express from "express";
-import studentsController from "../controllers/studentsController";
-import { authMiddleware } from "../controllers/auth_controller";
-import { isAdmin } from "../middleware/isAdmin";
+import express from 'express';
+import studentsController from '../controllers/studentsController';
+import { authMiddleware } from '../controllers/auth_controller';
+import { isAdmin } from '../middleware/isAdmin';
 
 const router = express.Router();
 
@@ -58,27 +58,7 @@ const router = express.Router();
  *       404:
  *         description: Student not found
  */
-router.get("/:id", studentsController.getStudentById);
-
-/**
- * @swagger
- * /api/students:
- *   get:
- *     summary: Get all students
- *     tags: [Students]
- *     responses:
- *       200:
- *         description: A list of all stuents
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Student'
- *       500:
- *         description: Server error
- */
-router.get("/", studentsController.getAllStudents);
+router.get('/:id', studentsController.getStudentById);
 
 /**
  * @swagger
@@ -103,12 +83,7 @@ router.get("/", studentsController.getAllStudents);
  *       500:
  *         description: Server error
  */
-router.delete(
-  "/:id",
-  authMiddleware,
-  isAdmin,
-  studentsController.deleteStudent
-);
+router.delete('/:id', authMiddleware, isAdmin, studentsController.deleteStudent);
 
 /**
  * @swagger
@@ -145,7 +120,7 @@ router.delete(
  *       500:
  *         description: server error
  */
-router.post("/", authMiddleware, isAdmin, studentsController.createStudent);
+router.post('/', authMiddleware, isAdmin, studentsController.createStudent);
 
 /**
  * @swagger
@@ -186,6 +161,7 @@ router.post("/", authMiddleware, isAdmin, studentsController.createStudent);
  *       500:
  *         description: Server error
  */
-router.put("/:id", authMiddleware, isAdmin, studentsController.updateStudent);
+router.put('/:id', authMiddleware, isAdmin, studentsController.updateStudent);
+
 
 export default router;
