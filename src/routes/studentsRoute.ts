@@ -62,6 +62,26 @@ router.get('/:id', studentsController.getStudentById);
 
 /**
  * @swagger
+ * /api/students:
+ *   get:
+ *     summary: Get all students
+ *     tags: [Students]
+ *     responses:
+ *       200:
+ *         description: A list of all stuents
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Student'
+ *       500:
+ *         description: Server error
+ */
+router.get("/", studentsController.getAllStudents);
+
+/**
+ * @swagger
  * /students/{id}:
  *   delete:
  *     summary: Delete a student

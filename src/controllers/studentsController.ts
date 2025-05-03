@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import studentModel from '../models/students_model';
 import StudentService from '../services/students_service';
 
 const getStudentById = async (req: Request, res: Response) => {
@@ -16,6 +15,17 @@ const getStudentById = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+const getAllStudents = async (_req: Request, res: Response) => {
+    try {
+      const students = await StudentService.getAllStudents();
+  
+      res.json(students);
+    } catch (error) {
+      console.error("Error fetching all students", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
 
 const createStudent = async (req: Request, res: Response) => {
     try {
@@ -54,5 +64,6 @@ export default {
     getStudentById,
     createStudent,
     updateStudent,
-    deleteStudent
+    deleteStudent,
+    getAllStudents
 };
