@@ -29,12 +29,17 @@ const getAllTeachers = async (req: Request, res: Response) => {
 
 const createTeacher = async (req: Request, res: Response) => {
     try {
-        const { userId, types } = req.body;
-        if (!userId || !types || !Array.isArray(types)) {
-            res.status(400).json({ message: 'Invalid request body' });
+        const { email, first_name, last_name, password, types } = req.body;
+        if (!email || !first_name || !last_name || !password || !Array.isArray(types)) {
+            res.status(400).json({ message: 'Missing or Invalid fields in request body' });
             return;
         }
-        const newTeacher = await teacherService.createTeacher(userId, types);
+        const newTeacher = await teacherService.createTeacher( 
+            email,
+            first_name,
+            last_name,
+            password,
+            types);
         res.status(201).json(newTeacher);
     } catch (error) {
         console.error('Error creating teacher:', error);

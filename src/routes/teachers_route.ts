@@ -78,7 +78,7 @@ router.get('/', teacherController.getAllTeachers);
  * @swagger
  * /teachers:
  *   post:
- *     summary: Create a new teacher
+ *     summary: Create a new teacher and a user
  *     tags: [Teachers]
  *     requestBody:
  *       required: true
@@ -87,10 +87,20 @@ router.get('/', teacherController.getAllTeachers);
  *           schema:
  *             type: object
  *             required:
- *               - userId
+ *               - email
+ *               - password
+ *               - first_name
+ *               - last_name
  *               - types
  *             properties:
- *               userId:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
  *                 type: string
  *               types:
  *                 type: array
@@ -99,13 +109,13 @@ router.get('/', teacherController.getAllTeachers);
  *                   enum: [profession, homeroom]
  *     responses:
  *       201:
- *         description: Teacher created successfully
+ *         description: Teacher and user created successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Teacher'
- *       400:
- *         description: Bad request
+ *       500:
+ *         description: Internal server error
  */
 router.post('/', authMiddleware, isAdmin, teacherController.createTeacher);
 
