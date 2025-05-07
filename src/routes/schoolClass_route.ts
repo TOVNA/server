@@ -86,4 +86,141 @@ router.get('/', schoolClassController.getAllClasses);
  */
 router.get('/:id', schoolClassController.getClassById);
 
+/**
+ * @swagger
+ * /api/classes:
+ *   post:
+ *     summary: Create a new school class
+ *     tags: [Classes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SchoolClass'
+ *     responses:
+ *       201:
+ *         description: Class created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SchoolClass'
+ *       400:
+ *         description: Invalid input
+ *       500:
+ *         description: Server error
+ */
+router.post('/', schoolClassController.createClass);
+
+/**
+ * @swagger
+ * /api/classes/{id}:
+ *   put:
+ *     summary: Update a school class by ID
+ *     tags: [Classes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the class to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SchoolClass'
+ *     responses:
+ *       200:
+ *         description: Class updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SchoolClass'
+ *       404:
+ *         description: Class not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/:id', schoolClassController.updateClass);
+
+/**
+ * @swagger
+ * /api/classes/{id}:
+ *   delete:
+ *     summary: Delete a school class by ID
+ *     tags: [Classes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the class to delete
+ *     responses:
+ *       200:
+ *         description: Class deleted successfully
+ *       404:
+ *         description: Class not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/:id', schoolClassController.deleteClass);
+
+/**
+ * @swagger
+ * /api/classes/homeroomTeacher/{id}:
+ *   get:
+ *     summary: Get class by homeroom teacher ID
+ *     tags: [Classes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the homeroom teacher
+ *     responses:
+ *       200:
+ *         description: Class found for the homeroom teacher
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SchoolClass'
+ *       404:
+ *         description: Class not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/homeroomTeacher/:id', schoolClassController.getClassByHomeroomTeacherId);
+
+/**
+ * @swagger
+ * /api/classes/student/{id}:
+ *   get:
+ *     summary: Get class by student ID
+ *     tags: [Classes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the student
+ *     responses:
+ *       200:
+ *         description: Class found for the student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SchoolClass'
+ *       404:
+ *         description: Class not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/student/:id', schoolClassController.getClassByStudentId);
+
+
 export default router;

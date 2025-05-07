@@ -11,6 +11,7 @@ import goalsRoute from "./routes/goalsRoute";
 import schoolClass_route from "./routes/schoolClass_route";
 import teachersRoute from "./routes/teachers_route";
 import authRouter from "./routes/auth_route";
+import classSubjectRoutes from "./routes/classSubject_route";
 
 
 const app: Express = express();
@@ -38,6 +39,7 @@ app.use("/goals", goalsRoute);
 app.use("/teachers", teachersRoute);
 app.use("/school-class", schoolClass_route);
 app.use("/auth", authRouter);
+app.use("/class-subject", classSubjectRoutes);
 
 
 const db = mongoose.connection;
