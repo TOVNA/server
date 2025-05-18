@@ -3,8 +3,24 @@ import * as questionnaireAnswerService from '../services/questionnaireAnswer_ser
 
 export const create = async (req: Request, res: Response): Promise<void> => {
   try {
-    const answer = await questionnaireAnswerService.createQuestionnaireAnswer(req.body);
-    res.status(201).json(answer);
+    const {
+      questionnaireId,
+      teacherId,
+      studentId,
+      answers
+    } = req.body;
+
+    if (!Array.isArray(answers) || answers.length === 0) {
+      res.status(400).json({ message: 'Answers must be a non-empty array.' });
+      return;
+    }
+    const result = await questionnaireAnswerService.createQuestionnaireAnswer({
+      questionnaireId,
+      teacherId,
+      studentId,
+      answers
+    });
+    res.status(201).json(result);
   } catch (err) {
     res.status(500).json({ message: 'Error creating answer', error: err });
   }
