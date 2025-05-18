@@ -12,6 +12,8 @@ import schoolClass_route from "./routes/schoolClass_route";
 import teachersRoute from "./routes/teachers_route";
 import authRouter from "./routes/auth_route";
 import classSubjectRoutes from "./routes/classSubject_route";
+import questionnaireRoute from "./routes/questionnaire_route";
+
 
 
 const app: Express = express();
@@ -40,6 +42,7 @@ app.use("/teachers", teachersRoute);
 app.use("/school-class", schoolClass_route);
 app.use("/auth", authRouter);
 app.use("/class-subject", classSubjectRoutes);
+app.use("/questionnaire", questionnaireRoute);
 
 
 const db = mongoose.connection;

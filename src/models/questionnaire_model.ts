@@ -16,7 +16,7 @@ const questionnaireSchema = new Schema<IQuestionnaire>(
       enum: ['teacher', 'homeroom'],
       required: true
     },
-    questionIds: [{ type: Schema.Types.ObjectId, ref: 'Question', required: true }]
+    questionIds: [{ type: Schema.Types.ObjectId, ref: 'Question'}]
   },
   {
     timestamps: true
