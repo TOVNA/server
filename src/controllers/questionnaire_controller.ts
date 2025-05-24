@@ -1,4 +1,4 @@
-import e, { Request,Response } from "express";
+import { Request,Response } from "express";
 import * as questionnaireService from "../services/questionnaire_service";
 
  const getAllQuestionnaires = async (req: Request, res: Response) => {
@@ -26,10 +26,10 @@ import * as questionnaireService from "../services/questionnaire_service";
 }
  const createQuestionnaire = async (req: Request, res: Response) => {
     try {
-        const { title, description, questions } = req.body;
-        if (!title || !description || !questions) {
-            res.status(400).json({ message: 'Invalid request body' });
-            return;
+        const { title, description, targetRole, questionIds = [] } = req.body;
+    if (!title || !targetRole) {
+     res.status(400).json({ message: 'Missing required fields' });
+     return;
         }
         const newQuestionnaire = await questionnaireService.createQuestionnaire(req.body);
         if (!newQuestionnaire) {
@@ -70,6 +70,7 @@ import * as questionnaireService from "../services/questionnaire_service";
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+/*
  const addQuestionToQuestionnaire = async (req: Request, res: Response) => {
     const { questionnaireId, questionId } = req.body;
     try {
@@ -84,6 +85,8 @@ import * as questionnaireService from "../services/questionnaire_service";
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+    */
+  /* 
  const removeQuestionFromQuestionnaire = async (req: Request, res: Response) => {
     const { questionnaireId, questionId } = req.body;
     try {
@@ -98,11 +101,13 @@ import * as questionnaireService from "../services/questionnaire_service";
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+    */
  const getQuestionnairesByTargetRole = async (req: Request, res: Response) => {
-    const targetRole = req.params.targetRole;
+    const targetRole = req.params.role;
   
     if (targetRole !== 'teacher' && targetRole !== 'homeroom') {
         res.status(400).json({ message: 'Invalid target role' });
+        return;
     }
   
     try {
@@ -115,7 +120,34 @@ import * as questionnaireService from "../services/questionnaire_service";
       console.error('Error fetching questionnaires by target role:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
-  };  
+  }; 
+  export const createWithQuestions = async (req: Request, res: Response) => {
+  try {
+    const questionnaire = await questionnaireService.createQuestionnaireWithQuestions(req.body);
+    res.status(201).json(questionnaire);
+  } catch (err) {
+    console.error('Error creating questionnaire with questions:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}; 
+export const updateWithQuestions = async (req: Request, res: Response) => {
+  try {
+    const questionnaire = await questionnaireService.updateQuestionnaireWithQuestions(
+      req.params.id,
+      req.body
+    );
+
+    if (!questionnaire) {
+      res.status(404).json({ message: 'Questionnaire not found' });
+      return;
+    }
+
+    res.status(200).json(questionnaire);
+  } catch (err) {
+    console.error('Error updating questionnaire with questions:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
   
   export default {  
     getAllQuestionnaires,
@@ -123,7 +155,9 @@ import * as questionnaireService from "../services/questionnaire_service";
     createQuestionnaire,
     updateQuestionnaire,
     deleteQuestionnaire,
-    addQuestionToQuestionnaire,
-    removeQuestionFromQuestionnaire,
-    getQuestionnairesByTargetRole
+   // addQuestionToQuestionnaire,
+   //removeQuestionFromQuestionnaire,
+    getQuestionnairesByTargetRole,
+    createWithQuestions,
+    updateWithQuestions
     };
