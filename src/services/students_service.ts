@@ -16,21 +16,21 @@ export const getStudentById = async (student_id: string) => {
 };
 
 export const getAllStudents = async () => {
-    const studentsList = await students.find().lean();
-    const classList = await classes.find().lean();
-  
-    const classByStudentId = new Map<string, any>();
-    for (const cls of classList) {
-      for (const sid of cls.studentIds) {
-        classByStudentId.set(sid.toString(), cls);
-      }
+  const studentsList = await students.find().lean();
+  const classList = await classes.find().lean();
+
+  const classByStudentId = new Map<string, any>();
+  for (const cls of classList) {
+    for (const sid of cls.studentIds) {
+      classByStudentId.set(sid.toString(), cls);
     }
-  
-    return studentsList.map((student) => ({
-      ...student,
-      class: classByStudentId.get(student._id.toString()) || null,
-    }));
-  };
+  }
+
+  return studentsList.map((student) => ({
+    ...student,
+    class: classByStudentId.get(student._id.toString()) || null,
+  }));
+};
 
 export const createStudent = async (studentData: IStudent) => {
   const student = new students(studentData);
@@ -59,6 +59,8 @@ export const deleteStudent = async (id: string) => {
   if (!student) {
     throw new Error("Student not found");
   }
+
+  await classes.updateMany({ studentIds: id }, { $pull: { studentIds: id } });
 
   await students.deleteOne({ _id: student._id });
 };
