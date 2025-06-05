@@ -5,11 +5,25 @@ import QuestionnaireAnswerModel from '../models/questionnaireAnswer_model';
 import QuestionModel from '../models/question_model';
 
 
- export const getGradesSummaryByStudent = async (req: Request, res: Response) => {
+export const getGradesSummaryByStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
+    const { from, to } = req.query;
 
-    const grades = await GradeModel.find({ studentId }).populate({
+    const dateFilter: any = {};
+
+    if (from) dateFilter.$gte = new Date(from as string);
+    if (to) dateFilter.$lte = new Date(to as string);
+
+    
+    if (!from && !to) {
+      dateFilter.$gte = new Date(new Date().getFullYear(), 0, 1);
+    }
+
+    const grades = await GradeModel.find({
+      studentId,
+      date: dateFilter
+    }).populate({
       path: 'classSubjectId',
       select: 'subject'
     });
@@ -36,11 +50,26 @@ import QuestionModel from '../models/question_model';
   }
 };
 
+
  export const getGradesOverTimeForStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
+    const { from, to } = req.query;
 
-    const grades = await GradeModel.find({ studentId }).populate({
+    const dateFilter: any = {};
+
+    if (from) dateFilter.$gte = new Date(from as string);
+    if (to) dateFilter.$lte = new Date(to as string);
+
+    // Default: from 1 January of current year
+    if (!from && !to) {
+      dateFilter.$gte = new Date(new Date().getFullYear(), 0, 1);
+    }
+
+    const grades = await GradeModel.find({
+      studentId,
+      date: dateFilter
+    }).populate({
       path: 'classSubjectId',
       select: 'subject'
     });
