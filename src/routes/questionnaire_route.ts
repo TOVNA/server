@@ -150,7 +150,7 @@ router.delete('/:id', questionnaireController.deleteQuestionnaire);
  *       404:
  *         description: Questionnaire or question not found
  */
-router.post('/:id/questions/:questionId', questionnaireController.addQuestionToQuestionnaire);
+//router.post('/:id/questions/:questionId', questionnaireController.addQuestionToQuestionnaire);
 
 /**
  * @swagger
@@ -177,7 +177,7 @@ router.post('/:id/questions/:questionId', questionnaireController.addQuestionToQ
  *       404:
  *         description: Questionnaire or question not found
  */
-router.delete('/:id/questions/:questionId', questionnaireController.removeQuestionFromQuestionnaire);
+//router.delete('/:id/questions/:questionId', questionnaireController.removeQuestionFromQuestionnaire);
 
 /**
  * @swagger
@@ -200,5 +200,11 @@ router.delete('/:id/questions/:questionId', questionnaireController.removeQuesti
  *         description: Invalid role
  */
 router.get('/target/:role', questionnaireController.getQuestionnairesByTargetRole);
+
+router.post('/with-questions', questionnaireController.createWithQuestions);
+
+router.put('/:id/with-questions', questionnaireController.updateWithQuestions);
+
+
 
 export default router;
