@@ -11,6 +11,7 @@ import goalsRoute from "./routes/goalsRoute";
 import schoolClass_route from "./routes/schoolClass_route";
 import teachersRoute from "./routes/teachers_route";
 import authRouter from "./routes/auth_route";
+import questionRoute from "./routes/question_route";
 import classSubjectRoutes from "./routes/classSubject_route";
 import questionnaireRoute from "./routes/questionnaire_route";
 import questionnaireAnswerRoute from "./routes/questionnaireAnswer_route"
@@ -43,6 +44,7 @@ app.use("/teachers", teachersRoute);
 app.use("/school-class", schoolClass_route);
 app.use("/auth", authRouter);
 app.use("/class-subject", classSubjectRoutes);
+app.use("/questions", questionRoute);
 app.use("/questionnaire", questionnaireRoute);
 app.use("/questionnaire-answer", questionnaireAnswerRoute);
 

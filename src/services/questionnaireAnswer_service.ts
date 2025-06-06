@@ -1,6 +1,7 @@
 import QuestionnaireAnswerModel from '../models/questionnaireAnswer_model';
 import { QuestionnaireAnswer } from '../models/questionnaireAnswer_model';
 import AnswerModel, { IAnswer } from '../models/answers_model';
+import QuestionModel, { IQuestion } from '../models/question_model';
 import { Types } from 'mongoose';
 
 interface CreateQuestionnaireAnswerInput {
