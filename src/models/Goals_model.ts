@@ -1,4 +1,3 @@
-// models/Goal.ts
 import mongoose, { Schema, Types } from 'mongoose';
 
 export interface ISubGoal {
@@ -10,11 +9,18 @@ export interface ISubGoal {
   achievedAt?: Date;
 }
 
-export interface IGoal  {
+export interface IStrategy {
+  text: string;
+  relatedGoal?: string;
+  source?: 'ai' | 'manual';
+}
+
+export interface IGoal {
   student_id: Types.ObjectId;
   createdBy: Types.ObjectId;
   generated_by_ai: boolean;
   goals: ISubGoal[];
+  strategies: IStrategy[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -28,10 +34,17 @@ const goalSchema = new Schema<IGoal>(
       {
         text: { type: String, required: true },
         priority: { type: String, enum: ['high', 'medium', 'low'], required: true },
-        confidence: Number,
-        source: { type: String, enum: ['ai', 'manual'] },
+        confidence: { type: Number, default: 0.5 },
+        source: { type: String, enum: ['ai', 'manual'], default: 'ai' },
         isAchieved: { type: Boolean, default: false },
-        achievedAt: Date,
+        achievedAt: { type: Date },
+      },
+    ],
+    strategies: [
+      {
+        text: { type: String, required: true },
+        relatedGoal: { type: String },
+        source: { type: String, enum: ['ai', 'manual'], default: 'ai' },
       },
     ],
   },
@@ -40,4 +53,3 @@ const goalSchema = new Schema<IGoal>(
 
 const GoalModel = mongoose.model<IGoal>('Goal', goalSchema);
 export default GoalModel;
-
