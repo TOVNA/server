@@ -20,27 +20,30 @@ export const deleteGoals = async (goalId: string) => {
   return GoalModel.findByIdAndDelete(goalId);
 };
 
-export const generateGoalsFromAnswers = async (studentId: string, createdBy: string) => {
-  // Get the latest questionnaire answers for the student
-  const latestQA = await QuestionnaireAnswerModel
-    .findOne({ studentId })
-    .sort({ createdAt: -1 })
-    .populate("answerIds");
+export const generateGoalsFromAnswers = async (studentId: string, createdBy: string, days: number) => {
+  const fromDate = new Date();
+  fromDate.setDate(fromDate.getDate() - days);
 
-  if (!latestQA) throw new Error("No questionnaire answers found");
+  const recentQAs = await QuestionnaireAnswerModel.find({
+    studentId,
+    createdAt: { $gte: fromDate }
+  }).sort({ createdAt: -1 }).populate("answerIds");
+
+if (!recentQAs || recentQAs.length === 0) {
+  throw new Error(`No questionnaire answers found in the past ${days} days`);
+}
 
   // Extract answers
-  const answers = latestQA.answerIds;
-  //const answers = (latestQA.answerIds as any[]).map(a => a.text).join("\n");
-  //console.log(answers);
+  const allAnswers = recentQAs.flatMap(qa => (qa.answerIds as any[]));
 
   // AI Prompt for goals & strategies
   const prompt = `
 אתה מערכת חכמה שתפקידה ליצור מטרות חינוכיות ואסטרטגיות לתלמידים עם צרכים מיוחדים.
 
-להלן תשובות של מורה על שאלון בנוגע לתלמיד:
+להלן תשובות של מורים על שאלון בנוגע לתלמיד  
+ הימים האחרונים ${days} התשובות הן מ
 ---
-${answers}
+${allAnswers}
 ---
 
 צור 3 מטרות חינוכיות ו-3 אסטרטגיות התערבות בקובץ JSON תקני.

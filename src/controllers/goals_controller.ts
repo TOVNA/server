@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import * as goalService from "../services/goals_service";
 
 export const generateGoals = async (req: Request, res: Response): Promise<void> => {
-  const { studentId, createdBy } = req.body;
+  const { studentId, createdBy, days } = req.body;
 
   try {
-    const result = await goalService.generateGoalsFromAnswers(studentId, createdBy);
+    const result = await goalService.generateGoalsFromAnswers(studentId, createdBy, days);
     res.status(201).json(result);
   } catch (err: any) {
     res.status(500).json({ error: err.message });

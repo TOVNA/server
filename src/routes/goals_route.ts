@@ -111,6 +111,12 @@ router.delete("/:goalId", authMiddleware, controller.deleteGoal);
  *               studentId:
  *                 type: string
  *                 description: ID of the student
+ *               createdBy:
+ *                 type: string
+ *                 description: ID of the user generating the goals
+ *               days:
+ *                 type: number
+ *                 description: The number of days ago to collect data from 
  *     responses:
  *       200:
  *         description: Generated and saved goals

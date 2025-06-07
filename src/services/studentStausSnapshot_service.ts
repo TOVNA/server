@@ -9,22 +9,28 @@ export const getSnapshotsByStudentId = async (studentId: string) => {
     .sort({ timestamp: -1 }); // Most recent first
 };
 
-export const generateStatusSnapshot = async (studentId: string, createdBy: string) => {
-  const latestQA = await QuestionnaireAnswerModel
-    .findOne({ studentId })
-    .sort({ createdAt: -1 })
-    .populate("answerIds");
+export const generateStatusSnapshot = async (studentId: string, createdBy: string, days: number) => {
+  const fromDate = new Date();
+  fromDate.setDate(fromDate.getDate() - days);
 
-  if (!latestQA) throw new Error("No questionnaire answers found");
+  const recentQAs = await QuestionnaireAnswerModel.find({
+    studentId,
+    createdAt: { $gte: fromDate }
+  }).sort({ createdAt: -1 }).populate("answerIds");
 
-  const answers = (latestQA.answerIds as any[]).map(a => a.text).join("\n");
+if (!recentQAs || recentQAs.length === 0) {
+  throw new Error(`No questionnaire answers found in the past ${days} days`);
+}
+
+  // Extract answers
+  const allAnswers = recentQAs.flatMap(qa => (qa.answerIds as any[]));
 
   const prompt = `
 אתה מערכת חכמה לניתוח מצבו של תלמיד עם צרכים מיוחדים.
-על סמך התשובות למטה, הפק סיכום קצר ודרג את רמתו של התלמיד בקטגוריות הבאות: למידה, חברתי, רגשי (1-5).
-
+על סמך התשובות למטה, הפק סיכום קצר ודרג את רמתו של התלמיד בקטגוריות הבאות: למידה, חברתי, התנהגותי (1-10).
+התשובות הן מה ${days} האחרונים
 ---
-${answers}
+${allAnswers}
 ---
 
 פורמט JSON תקני בלבד:

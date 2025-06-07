@@ -46,6 +46,12 @@ router.get("/:studentId", controller.getSnapshotsByStudent);
  *               studentId:
  *                 type: string
  *                 description: The student's ID
+ *               createdBy:
+ *                 type: string
+ *                 description: ID of the user generating the goals
+ *               days:
+ *                 type: number
+ *                 description: The number of days ago to collect data from 
  *     responses:
  *       200:
  *         description: Snapshot generated and saved

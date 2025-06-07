@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import * as statusService from "../services/studentStausSnapshot_service";
 
 export const generateSnapshot = async (req: Request, res: Response): Promise<void> => {
-  const { studentId, createdBy } = req.body;
+  const { studentId, createdBy, days } = req.body;
 
   try {
-    const snapshot = await statusService.generateStatusSnapshot(studentId, createdBy);
+    const snapshot = await statusService.generateStatusSnapshot(studentId, createdBy, days);
     res.status(201).json(snapshot);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
