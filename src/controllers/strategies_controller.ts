@@ -39,13 +39,13 @@ export const deleteStrategy = async (req: Request, res: Response) => {
 
 export const generateStrategies = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { studentId } = req.body;
-    if (!studentId) {
-      res.status(400).json({ error: "Missing studentId" });
+    const { goalId } = req.body;
+    if (!goalId) {
+      res.status(400).json({ error: "Missing goalId" });
       return;
     }
 
-    const strategies = await strategyService.generateStrategiesForStudent(studentId);
+    const strategies = await strategyService.generateStrategiesForStudent(goalId);
     res.status(201).json(strategies);
   } catch (err: any) {
     res.status(500).json({ error: err.message });

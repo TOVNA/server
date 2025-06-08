@@ -10,11 +10,11 @@ interface StrategyInput {
 }
 
 export const getGoalsByStudentId = async (studentId: string) => {
-  return GoalModel.find({ studentId }).populate("strategies");
+  return GoalModel.find({ studentId });
 };
 
 export const updateGoal = async (goalId: string, updates: Partial<IGoal>) => {
-  return GoalModel.findByIdAndUpdate(goalId, { ...updates, generatedByAI: false }, { new: true }).populate("strategies");
+  return GoalModel.findByIdAndUpdate(goalId, { ...updates, generatedByAI: false }, { new: true });
 };
 
 export const deleteGoals = async (goalId: string) => {
@@ -37,7 +37,7 @@ export const createGoal = async ( data: Partial<Omit<IGoal, "strategies">> & { s
   });
   await goal.save();
 
-  const createdStrategies = await Promise.all(
+  await Promise.all(
     strategies.map((strategy: Partial<IStrategy>) => {
       return new StrategyModel({
         goalId: goal._id,
@@ -45,11 +45,6 @@ export const createGoal = async ( data: Partial<Omit<IGoal, "strategies">> & { s
       }).save();
     })
   );
-
-  goal.strategies = createdStrategies.map((s) => s._id as mongoose.Types.ObjectId);
-  await goal.save();
-
-  await goal.populate("strategies");
 
   return goal;
 };
@@ -109,7 +104,6 @@ ${allAnswers}
       text: goalData.text,
       studentId,
       createdBy,
-      strategies: [],
       generatedByAI: true
     });
     const savedGoal = await goalDoc.save();
@@ -131,11 +125,7 @@ ${allAnswers}
     });
     const savedStrategy = await strategyDoc.save();
 
-    await GoalModel.findByIdAndUpdate(
-      relatedGoalId,
-      { $push: { strategies: savedStrategy._id } }
-    );
   }
 
-  return await GoalModel.find({ _id: { $in: createdGoals.map(g => g._id) } }).populate("strategies");
+  return await GoalModel.find({ _id: { $in: createdGoals.map(g => g._id) } });
 };

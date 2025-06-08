@@ -161,7 +161,7 @@ router.delete("/:id", authMiddleware, strategiesController.deleteStrategy);
  * @swagger
  * /strategies/generate:
  *   post:
- *     summary: Generate strategies for a student based on their goals
+ *     summary: Generate strategies for a student based on goals
  *     tags: [Strategies]
  *     security:
  *       - bearerAuth: []
@@ -172,11 +172,11 @@ router.delete("/:id", authMiddleware, strategiesController.deleteStrategy);
  *           schema:
  *             type: object
  *             required:
- *               - studentId
+ *               - goalId
  *             properties:
- *               studentId:
+ *               goalId:
  *                 type: string
- *                 description: Student ID to generate strategies for
+ *                 description: Goal ID to generate strategies for
  *     responses:
  *       201:
  *         description: Generated strategies

@@ -19,22 +19,22 @@ export const deleteStrategy = async (id: string) => {
   return await StrategyModel.findByIdAndDelete(id);
 };
 
-export const generateStrategiesForStudent = async (studentId: string) => {
-  const goals = await GoalModel.find({ studentId });
+export const generateStrategiesForStudent = async (goalId: string) => {
+  const goal = await GoalModel.find({ _id: goalId });
 
-  if (!goals.length) {
+  if (!goal.length) {
     throw new Error("No goals found for this student.");
   }
 
   const prompt = `
-אתה מערכת חכמה שתפקידה לנסח אסטרטגיות התערבות חינוכיות עבור מטרות קיימות של תלמיד עם צרכים מיוחדים.
+אתה מערכת חכמה שתפקידה לנסח אסטרטגיות התערבות חינוכיות עבור מטרה קיימת של תלמיד עם צרכים מיוחדים.
 
-להלן רשימת מטרות של תלמיד:
+להלן מטרת התלמיד:
 ---
-${goals.map(goal => `- { "goalId": "${(goal._id as mongoose.Types.ObjectId).toString()}", "text": "${goal.text}" }`).join("\n")}
+${goal}
 ---
 
-צור אסטרטגיה אחת או יותר לכל מטרה. החזר את הפלט רק בפורמט JSON תקין, ללא הסברים, ללא תוספות:
+צור 1-2 אסטרטגיות למטרה. החזר את הפלט רק בפורמט JSON תקין, ללא הסברים, ללא תוספות:
 {
   "strategies": [
     { "text": "תכנון לוח משימות יומי", "goalId": "goalObjectIdHere" },
@@ -54,10 +54,6 @@ ${goals.map(goal => `- { "goalId": "${(goal._id as mongoose.Types.ObjectId).toSt
     const strategyDoc = await StrategyModel.create({
       text: strategy.text,
       goalId: strategy.goalId,
-    });
-
-    await GoalModel.findByIdAndUpdate(strategy.goalId, {
-      $push: { strategies: strategyDoc._id }
     });
 
     createdStrategies.push(strategyDoc);
