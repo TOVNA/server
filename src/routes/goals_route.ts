@@ -6,10 +6,98 @@ const router = Router();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Strategy:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: Strategy ID
+ *         goalId:
+ *           type: string
+ *           description: The ID of the related goal
+ *         text:
+ *           type: string
+ *           description: Strategy text
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     Goal:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         studentId:
+ *           type: string
+ *         text:
+ *           type: string
+ *         createdBy:
+ *           type: string
+ *         strategies:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Strategy'
+ *         generatedByAI:
+ *           type: boolean
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ */
+
+/**
+ * @swagger
  * tags:
  *   name: Goals
- *   description: Manage student goals and strategies
+ *   description: Manage student goals
  */
+
+/**
+ * @swagger
+ * /goals:
+ *   post:
+ *     summary: Create a new goal manually
+ *     tags: [Goals]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               studentId:
+ *                 type: string
+ *                 description: ID of the student
+ *               text:
+ *                 type: string
+ *                 description: Goal text
+ *               strategies:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     text:
+ *                       type: string
+ *     responses:
+ *       201:
+ *         description: Created goal document
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/Goal'
+ *                 - type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Goal'
+ */
+router.post("/", authMiddleware, controller.createGoal);
 
 /**
  * @swagger
@@ -27,6 +115,12 @@ const router = Router();
  *     responses:
  *       200:
  *         description: List of goals
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Goal'
  *       404:
  *         description: Student not found
  */
@@ -36,7 +130,7 @@ router.get("/:studentId", authMiddleware, controller.getGoalsByStudent);
  * @swagger
  * /goals/{goalId}:
  *   put:
- *     summary: Update a goal or its strategies
+ *     summary: Update an existing goal
  *     tags: [Goals]
  *     parameters:
  *       - in: path
@@ -44,7 +138,7 @@ router.get("/:studentId", authMiddleware, controller.getGoalsByStudent);
  *         required: true
  *         schema:
  *           type: string
- *         description: Goal ID
+ *         description: The ID of the goal to update
  *     requestBody:
  *       required: true
  *       content:
@@ -52,17 +146,9 @@ router.get("/:studentId", authMiddleware, controller.getGoalsByStudent);
  *           schema:
  *             type: object
  *             properties:
- *               goals:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     text:
- *                       type: string
- *                     priority:
- *                       type: string
- *                     isAchieved:
- *                       type: boolean
+ *               text:
+ *                 type: string
+ *                 description: Updated goal text
  *               strategies:
  *                 type: array
  *                 items:
@@ -70,9 +156,16 @@ router.get("/:studentId", authMiddleware, controller.getGoalsByStudent);
  *                   properties:
  *                     text:
  *                       type: string
+ *                       description: Strategy text
  *     responses:
  *       200:
- *         description: Updated goal document
+ *         description: The updated goal document
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Goal'
+ *       404:
+ *         description: Goal not found
  */
 router.put("/:goalId", authMiddleware, controller.updateGoal);
 
@@ -90,7 +183,7 @@ router.put("/:goalId", authMiddleware, controller.updateGoal);
  *           type: string
  *         description: Goal ID
  *     responses:
- *       200:
+ *       204:
  *         description: Goal deleted
  */
 router.delete("/:goalId", authMiddleware, controller.deleteGoal);
@@ -111,15 +204,20 @@ router.delete("/:goalId", authMiddleware, controller.deleteGoal);
  *               studentId:
  *                 type: string
  *                 description: ID of the student
- *               createdBy:
- *                 type: string
- *                 description: ID of the user generating the goals
  *               days:
  *                 type: number
  *                 description: The number of days ago to collect data from 
  *     responses:
- *       200:
+ *       201:
  *         description: Generated and saved goals
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/Goal'
+ *                 - type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Goal'
  */
 router.post("/generate", authMiddleware, controller.generateGoals);
 
