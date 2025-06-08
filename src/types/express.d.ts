@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { Role } from './roles'
+import { Role } from './roles';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
