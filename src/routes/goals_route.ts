@@ -124,7 +124,8 @@ router.post("/", authMiddleware, controller.createGoal);
  *       404:
  *         description: Student not found
  */
-router.get("/:studentId", authMiddleware, controller.getGoalsByStudent);
+router.get("/student/:studentId", authMiddleware, controller.getGoalsByStudent);
+router.get("/:goalId", authMiddleware, controller.getGoalById);
 
 /**
  * @swagger

@@ -12,6 +12,9 @@ interface StrategyInput {
 export const getGoalsByStudentId = async (studentId: string) => {
   return GoalModel.find({ studentId });
 };
+export const getGoalById = async (goalId: string) => {
+  return GoalModel.findById(goalId);
+};
 
 export const updateGoal = async (goalId: string, updates: Partial<IGoal>) => {
   return GoalModel.findByIdAndUpdate(goalId, { ...updates, generatedByAI: false }, { new: true });

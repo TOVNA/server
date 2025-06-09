@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as controller from "../controllers/studentStatusSnapshot_controller";
+import { authMiddleware } from "../controllers/auth_controller";
 
 const router = Router();
 
@@ -56,6 +57,6 @@ router.get("/:studentId", controller.getSnapshotsByStudent);
  *       200:
  *         description: Snapshot generated and saved
  */
-router.post("/generate", controller.generateSnapshot);
+router.post("/generate", authMiddleware, controller.generateSnapshot);
 
 export default router;
