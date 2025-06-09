@@ -3,6 +3,7 @@ import GradeModel from '../models/grade_model';
 import ClassSubjectModel from '../models/classSubject_model';
 import QuestionnaireAnswerModel from '../models/questionnaireAnswer_model';
 import QuestionModel from '../models/question_model';
+import mongoose from "mongoose";
 
 
 export const getGradesSummaryByStudent = async (req: Request, res: Response) => {
@@ -85,72 +86,90 @@ export const getGradesSummaryByStudent = async (req: Request, res: Response) => 
     res.status(500).json({ message: 'Failed to fetch grades over time', error: err });
   }
 };
-
-export const getQuestionnaireSummaryForStudent = async (req: Request, res: Response) => {
+/*
+export const getAverageGradeFromQuestionnaire = async (req: Request, res: Response) => {
   try {
-    const { studentId } = req.params;
-    const { from, to } = req.query;
+    const { studentId, questionnaireId } = req.params;
 
-    const filter: any = { studentId };
+    // הבאת כל התשובות של השאלון עבור התלמיד
+    const answerDoc = await QuestionnaireAnswerModel.findOne({
+      studentId: new mongoose.Types.ObjectId(studentId),
+      questionnaireId: new mongoose.Types.ObjectId(questionnaireId)
+    }).populate('answerIds');
 
-    if (from) filter.createdAt = { ...(filter.createdAt || {}), $gte: new Date(from as string) };
-    if (to) filter.createdAt = { ...(filter.createdAt || {}), $lte: new Date(to as string) };
+    if (!answerDoc) {
+      res.status(404).json({ message: 'No questionnaire answers found' });
+      return;
+    }
 
-   
-    const answersDocs = await QuestionnaireAnswerModel.find(filter).populate('answerIds');
+    const answerIds = answerDoc.answerIds as any[];
+    const numericAnswers = answerIds.filter((ans) => typeof ans.answerNumeric === 'number');
 
-    const numericMap: { [questionId: string]: number[] } = {};
-    const choiceMap: { [questionId: string]: { [option: string]: number } } = {};
+    if (numericAnswers.length === 0) {
+       res.status(200).json({ averageScore: null, message: 'No numeric answers found' });
+      return;
+    }
 
-    for (const qAnswer of answersDocs) {
-      for (const ans of qAnswer.answerIds as any[]) {
-        const qId = ans.questionId.toString();
+    const total = numericAnswers.reduce((sum, ans) => sum + ans.answerNumeric, 0);
+    const avg = total / numericAnswers.length;
 
+    res.json({ averageScore: Math.round(avg * 100) / 100 });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to calculate average score', error: err });
+  }
+};
+
+export const getClosedQuestionsAverages = async (req: Request, res: Response) => {
+  try {
+    const { studentId, questionnaireId } = req.params;
+
+    const answersDocs = await QuestionnaireAnswerModel.find({
+      studentId: new mongoose.Types.ObjectId(studentId),
+      questionnaireId: new mongoose.Types.ObjectId(questionnaireId)
+    }).populate('answerIds');
+
+    if (!answersDocs || answersDocs.length === 0) {
+       res.status(404).json({ message: 'No answers found for student & questionnaire' });
+      return;
+    }
+
+    const questionMap: {
+      [questionId: string]: {
+        scores: number[];
+        dates: Date[];
+      };
+    } = {};
+
+    for (const doc of answersDocs) {
+      for (const ans of doc.answerIds as any[]) {
         if (typeof ans.answerNumeric === 'number') {
-          if (!numericMap[qId]) numericMap[qId] = [];
-          numericMap[qId].push(ans.answerNumeric);
-        }
-
-        if (Array.isArray(ans.answerOptions)) {
-          if (!choiceMap[qId]) choiceMap[qId] = {};
-          ans.answerOptions.forEach((opt: string) => {
-         choiceMap[qId][opt] = (choiceMap[qId][opt] || 0) + 1;
-     });
-
+          const qId = ans.questionId.toString();
+          if (!questionMap[qId]) {
+            questionMap[qId] = { scores: [], dates: [] };
+          }
+          questionMap[qId].scores.push(ans.answerNumeric);
+          questionMap[qId].dates.push(ans.createdAt);
         }
       }
     }
 
-    const questionIds = [...new Set([...Object.keys(numericMap), ...Object.keys(choiceMap)])];
+    const questionIds = Object.keys(questionMap);
     const questions = await QuestionModel.find({ _id: { $in: questionIds } });
 
-    const result = questions.map((q) => {
-      const qId = q._id.toString();
+    const results = questions.map((q) => {
+      const data = questionMap[q._id.toString()];
+      const average = data.scores.reduce((a, b) => a + b, 0) / data.scores.length;
+      return {
+        question: q.text,
+        average: Math.round(average * 100) / 100,
+        count: data.scores.length,
+        dates: data.dates.map((d) => d.toISOString())
+      };
+    });
 
-      if (numericMap[qId]) {
-        const values = numericMap[qId];
-        const avg = values.reduce((a, b) => a + b, 0) / values.length;
-        return {
-          question: q.text,
-          type: 'numeric',
-          average: Math.round(avg * 100) / 100,
-          count: values.length
-        };
-      }
-
-      if (choiceMap[qId]) {
-        return {
-          question: q.text,
-          type: 'multiple-choice',
-          distribution: choiceMap[qId]
-        };
-      }
-
-      return null;
-    }).filter(Boolean);
-
-    res.json(result);
+    res.json({ questionnaireId, studentId, results });
   } catch (err) {
-    res.status(500).json({ message: 'Error processing questionnaire summary', error: err });
+    res.status(500).json({ message: 'Error retrieving question averages', error: err });
   }
 };
+*/

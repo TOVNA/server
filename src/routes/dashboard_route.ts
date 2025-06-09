@@ -2,7 +2,9 @@ import express from 'express';
 import {
   getGradesSummaryByStudent,
   getGradesOverTimeForStudent,
-  getQuestionnaireSummaryForStudent
+  //getClosedQuestionsAverages
+
+ 
 } from '../controllers/dashboard_controller';
 
 const router = express.Router();
@@ -82,6 +84,11 @@ const router = express.Router();
 
 router.get('/student/:studentId/grades-summary', getGradesSummaryByStudent);
 router.get('/student/:studentId/grades-over-time', getGradesOverTimeForStudent);
-router.get('/student/:studentId/questionnaire-summary', getQuestionnaireSummaryForStudent);
+/*
+router.get(
+  '/student/:studentId/questionnaire/:questionnaireId/closed-questions',
+  getClosedQuestionsAverages
+);
+*/
 
 export default router;
