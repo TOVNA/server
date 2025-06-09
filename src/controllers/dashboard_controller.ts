@@ -5,7 +5,6 @@ import QuestionnaireAnswerModel from '../models/questionnaireAnswer_model';
 import QuestionModel from '../models/question_model';
 import mongoose from "mongoose";
 
-
 export const getGradesSummaryByStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
@@ -16,8 +15,8 @@ export const getGradesSummaryByStudent = async (req: Request, res: Response) => 
     if (from) dateFilter.$gte = new Date(from as string);
     if (to) dateFilter.$lte = new Date(to as string);
 
-    
     if (!from && !to) {
+      // If no date range is provided, default to the start of the current year
       dateFilter.$gte = new Date(new Date().getFullYear(), 0, 1);
     }
 
@@ -39,20 +38,26 @@ export const getGradesSummaryByStudent = async (req: Request, res: Response) => 
       subjectMap[subject].count += 1;
     });
 
-    const result = Object.entries(subjectMap).map(([subject, data]) => ({
+    const summary = Object.entries(subjectMap).map(([subject, data]) => ({
       subject,
       average: Math.round((data.total / data.count) * 100) / 100,
       count: data.count
     }));
 
-    res.json(result);
+    res.json({
+      studentId,
+      dateRange: {
+        from: dateFilter.$gte ? dateFilter.$gte.toISOString() : null,
+        to: dateFilter.$lte ? dateFilter.$lte.toISOString() : null
+      },
+      summary
+    });
   } catch (err) {
     res.status(500).json({ message: 'Failed to get grade summary', error: err });
   }
 };
 
-
- export const getGradesOverTimeForStudent = async (req: Request, res: Response) => {
+export const getGradesOverTimeForStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
     const { from, to } = req.query;
@@ -62,7 +67,7 @@ export const getGradesSummaryByStudent = async (req: Request, res: Response) => 
     if (from) dateFilter.$gte = new Date(from as string);
     if (to) dateFilter.$lte = new Date(to as string);
 
-    // Default: from 1 January of current year
+    // If no date range is provided, default to the start of the current year
     if (!from && !to) {
       dateFilter.$gte = new Date(new Date().getFullYear(), 0, 1);
     }
@@ -76,9 +81,10 @@ export const getGradesSummaryByStudent = async (req: Request, res: Response) => 
     });
 
     const result = grades.map((grade) => ({
+      studentId: grade.studentId,                       
       subject: (grade.classSubjectId as any)?.subject || 'לא ידוע',
       score: grade.score,
-      date: grade.date
+      date: grade.date                                  
     }));
 
     res.json(result);
@@ -86,6 +92,7 @@ export const getGradesSummaryByStudent = async (req: Request, res: Response) => 
     res.status(500).json({ message: 'Failed to fetch grades over time', error: err });
   }
 };
+
 /*
 export const getAverageGradeFromQuestionnaire = async (req: Request, res: Response) => {
   try {
