@@ -97,7 +97,6 @@ export const deleteGoal = async (
   try {
     const goalId = req.params.goalId;
     await goalService.deleteGoals(goalId);
-    await deleteStrategiesByGoal(goalId);
     res.status(204).send();
   } catch (err: any) {
     res.status(500).json({ error: err.message });

@@ -101,7 +101,7 @@ router.post("/", authMiddleware, controller.createGoal);
 
 /**
  * @swagger
- * /goals/{studentId}:
+ * /goals/student/{studentId}:
  *   get:
  *     summary: Get all goals for a student
  *     tags: [Goals]
@@ -118,13 +118,37 @@ router.post("/", authMiddleware, controller.createGoal);
  *         content:
  *           application/json:
  *             schema:
+ *               $ref: '#/components/schemas/Goal'
+ *       404:
+ *         description: goal not found
+ */
+router.get("/student/:studentId", authMiddleware, controller.getGoalsByStudent);
+
+/**
+ * @swagger
+ * /goals/{id}:
+ *   get:
+ *     summary: Get goal by id
+ *     tags: [Goals]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The goal's ID
+ *     responses:
+ *       200:
+ *         description: goal
+ *         content:
+ *           application/json:
+ *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Goal'
  *       404:
  *         description: Student not found
  */
-router.get("/student/:studentId", authMiddleware, controller.getGoalsByStudent);
 router.get("/:goalId", authMiddleware, controller.getGoalById);
 
 /**
