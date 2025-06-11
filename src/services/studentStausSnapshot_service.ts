@@ -37,9 +37,9 @@ ${allAnswers}
 {
   "summary": "התלמיד מראה קושי חברתי אך מתקדם בלמידה.",
   "grades": [
-    { "category": "learning", "value": 4 },
-    { "category": "social", "value": 2 },
-    { "category": "behavioral", "value": 3 }
+    { "category": "לימודי", "value": 4 },
+    { "category": "חברתי", "value": 2 },
+    { "category": "התנהגותי", "value": 3 }
   ]
 }
 `;

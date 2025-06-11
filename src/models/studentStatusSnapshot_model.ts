@@ -1,9 +1,9 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema, Types } from "mongoose";
 
 export enum GradeCategory {
-  Learning = 'learning',
-  Social = 'social',
-  Behavioral = 'behavioral',
+  Learning = "לימודי",
+  Social = "חברתי",
+  Behavioral = "התנהגותי",
 }
 
 export interface IStudentGrade {
@@ -22,8 +22,8 @@ export interface IStudentStatusSnapshot {
 
 const studentStatusSnapshotSchema = new Schema<IStudentStatusSnapshot>(
   {
-    student_id: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    student_id: { type: Schema.Types.ObjectId, ref: "Student", required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     summary: { type: String, required: true },
     grades: [
       {
@@ -41,7 +41,7 @@ const studentStatusSnapshotSchema = new Schema<IStudentStatusSnapshot>(
 );
 
 const StudentStatusSnapshotModel = mongoose.model<IStudentStatusSnapshot>(
-  'StudentStatusSnapshot',
+  "StudentStatusSnapshot",
   studentStatusSnapshotSchema
 );
 
