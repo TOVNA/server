@@ -140,7 +140,8 @@ const login = async (req: Request, res: Response) => {
             {
                 accessToken: tokens.accessToken,
                 refreshToken: tokens.refreshToken,
-                _id: user._id
+                _id: user._id,
+                role: user.role,
             });
 
     } catch (err) {
