@@ -17,7 +17,8 @@ import questionRoute from "./routes/question_route";
 import classSubjectRoutes from "./routes/classSubject_route";
 import questionnaireRoute from "./routes/questionnaire_route";
 import questionnaireAnswerRoute from "./routes/questionnaireAnswer_route"
-
+import gradeRoutes from "./routes/grade_route";
+import dashboardRoute from "./routes/dashboard_route";
 
 
 const app: Express = express();
@@ -51,6 +52,8 @@ app.use("/class-subject", classSubjectRoutes);
 app.use("/questions", questionRoute);
 app.use("/questionnaire", questionnaireRoute);
 app.use("/questionnaire-answer", questionnaireAnswerRoute);
+app.use("/grade", gradeRoutes);
+app.use("/dashboard", dashboardRoute);
 
 
 const db = mongoose.connection;

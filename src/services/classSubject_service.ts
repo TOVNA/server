@@ -1,4 +1,4 @@
-import ClassSubjectModel, { IClassSubject } from '../models/classsSubject_model';
+import ClassSubjectModel, { IClassSubject } from '../models/classSubject_model';
 
 export const getAllClassSubjects = async () => {
     return await ClassSubjectModel.find()
