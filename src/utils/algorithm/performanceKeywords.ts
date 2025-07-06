@@ -1,5 +1,5 @@
 const PERFORMANCE_KEYWORDS: Record<string, number> = {
-  // Positive keywords - used to uncrease the score
+  // Positive keywords
   'מצטיין': 2,
   'טוב': 2,
   'מעולה': 2,
@@ -14,21 +14,21 @@ const PERFORMANCE_KEYWORDS: Record<string, number> = {
   'מגלה מוטיבציה': 1,
   'מראה שיפור': 1,
   'משתפר': 1,
-  'יציב': 0.5,
-  'מתמיד': 0.5,
-  'מבצע': 0.5,
   'עצמאי': 1,
   'היטב': 1,
   'ממושמע': 1,
   'מותאם': 1,
+  'יציב': 0.5,
+  'מתמיד': 0.5,
+  'מבצע': 0.5,
 
-  // Neutral keyword - used to adjust the score lightly
+  // Neutral keyword
   'זקוק': -0.5,
   'הכוונה': -0.5,
   'לעיתים': -0.5,
   'אך': -0.5,
 
-  // Negative keywords - used to lower the score
+  // Negative keywords
   'מתקשה': -1,
   'נמנע': -2,
   'לא משתף פעולה': -2,
