@@ -15,7 +15,7 @@ const getAllClassSubjects = async (req: Request, res: Response) => {
     }
 };
 const getClassSubjectById = async (req: Request, res: Response) => {
-    const classSubjectId = req.params.id;
+    const classSubjectId = req.params.classSubject_id;
     try {
         const classSubject = await classSubjectService.getClassSubjectById(classSubjectId);
         if (!classSubject) {
@@ -42,7 +42,7 @@ const createClassSubject = async (req: Request, res: Response) => {
       }
 };
 const updateClassSubject = async (req: Request, res: Response) => {
-    const classSubjectId = req.params.id;
+    const classSubjectId = req.params.classSubject_id;
     try {
         const updatedClassSubject = await classSubjectService.updateClassSubject(classSubjectId, req.body);
         if (!updatedClassSubject) {
