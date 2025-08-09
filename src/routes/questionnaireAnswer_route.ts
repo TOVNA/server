@@ -77,6 +77,33 @@ router.get('/by-student/:studentId', controller.getByStudentId);
 
 /**
  * @swagger
+ * /questionnare-answer/by-teacher/{teacherId}:
+ *   get:
+ *     summary: Get questionnaire answers by teacher ID
+ *     tags: [QuestionnaireAnswer]
+ *     parameters:
+ *       - in: path
+ *         name: teacherId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The teacher ID
+ *     responses:
+ *       200:
+ *         description: List of questionnaire answers for the teacher
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/QuestionnaireAnswer'
+ *       500:
+ *         description: Server error
+ */
+router.get('/by-teacher/:teacherId', controller.getByTeacherId);
+
+/**
+ * @swagger
  * /questionnare-answer/{id}:
  *   get:
  *     summary: Get a questionnaire answer by ID

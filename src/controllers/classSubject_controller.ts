@@ -69,7 +69,7 @@ const deleteClassSubject = async (req: Request, res: Response) => {
     }
 };
 const getClassSubjectByTeacherId = async (req: Request, res: Response) => {
-    const teacherId = req.params.id;
+    const teacherId = req.params.teacherId;
     try {
         const classSubjects = await classSubjectService.getClassSubjectByTeacherId(teacherId);
         if (!classSubjects) {
