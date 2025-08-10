@@ -1,6 +1,7 @@
 import QuestionnaireAnswerModel from "../models/questionnaireAnswer_model";
 import StudentStatusSnapshotModel from "../models/studentStatusSnapshot_model";
 import { geminiModel } from "../utils";
+import { calculateStudentScores } from "../utils/algorithm/scoreStudent";
 
 // Get all snapshots for a student
 export const getSnapshotsByStudentId = async (studentId: string) => {
@@ -33,7 +34,9 @@ if (!recentQAs || recentQAs.length === 0) {
 ${allAnswers}
 ---
 
-פורמט JSON תקני בלבד:
+פורמט JSON תקני בלבד: 
+הקטגוריות הן: "לימודי", "חברתי", "התנהגותי".
+
 {
   "summary": "התלמיד מראה קושי חברתי אך מתקדם בלמידה.",
   "grades": [
@@ -47,11 +50,21 @@ ${allAnswers}
   const response = await geminiModel.generateContent(prompt);
   const parsed = JSON.parse(response.response.text().replace(/^```json\n/, "").replace(/\n```$/, ""));
 
+  const algoGrades = await calculateStudentScores(studentId, days);
+
+  // calculate the average of the algoGrades with the AI grades
+  
+  const avgGrades = parsed.grades.map((grade: { category: string, value: number }) => {
+    const algoValue = algoGrades.get(grade.category) || 0;
+    const avgValue = (algoValue + grade.value) / 2.0; // Average the AI and algorithm grades
+    return { category: grade.category, value: avgValue }; // Round to nearest integer
+  });
+
   const saved = await StudentStatusSnapshotModel.create({
     student_id: studentId,
-    createdBy,
+    createdBy: createdBy,
     summary: parsed.summary,
-    grades: parsed.grades,
+    grades: avgGrades,
     timestamp: new Date()
   });
 

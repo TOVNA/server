@@ -41,7 +41,7 @@ function normalizeScore(total: number, count: number): number {
 export async function calculateStudentScores(
   studentId: string,
   days: number = 5
-): Promise<Record<Category, number>> {
+): Promise<Map<String, number>> {
   
   const daysAgo = new Date();
   daysAgo.setDate(daysAgo.getDate() - days);
@@ -83,5 +83,5 @@ export async function calculateStudentScores(
     })
   ) as Record<Category, number>;
 
-  return finalScores;
+  return new Map(Object.entries(finalScores));
 }
