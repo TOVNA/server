@@ -112,3 +112,10 @@ export const updateQuestionnaireAnswer = async (
 export const deleteQuestionnaireAnswer = async (id: string) => {
   return await QuestionnaireAnswerModel.findByIdAndDelete(id);
 };
+
+export const getQuestionnaireAnswersByTeacherId = async (teacherId: string) => {
+  return await QuestionnaireAnswerModel.find({ teacherId })
+    .populate('questionnaireId')
+    .populate('studentId')
+    .populate('answerIds');
+};

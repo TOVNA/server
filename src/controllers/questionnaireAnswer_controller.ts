@@ -89,3 +89,17 @@ export const remove = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: 'Error deleting answer', error: err });
   }
 };
+
+export const getByTeacherId = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { teacherId } = req.params;
+    const items = await questionnaireAnswerService.getQuestionnaireAnswersByTeacherId(teacherId);
+    if (!items || items.length === 0) {
+      res.status(404).json({ message: 'Questionnaire answers for teacherId not found' });
+      return;
+    }
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ message: 'Error retrieving questionnaire answers for teacher', error: err });
+  }
+};
