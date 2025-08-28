@@ -36,6 +36,12 @@ const googleSignin = async (req: Request, res: Response) => {
         res.status(500).send("Server Error");
         return;
       }
+
+      if (!user.refreshToken) {
+        user.refreshToken = [];
+      }
+      user.refreshToken.push(tokens.refreshToken);
+      await user.save();
       res.status(200).send({
         userId: user._id,
         email: user.email,
