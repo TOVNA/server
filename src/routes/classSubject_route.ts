@@ -12,7 +12,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/class-subjects:
+ * /class-subjects:
  *   get:
  *     summary: Get all class subjects
  *     tags: [ClassSubjects]
@@ -24,7 +24,7 @@ router.get('/', classSubjectController.getAllClassSubjects);
 
 /**
  * @swagger
- * /api/class-subjects/{classSubject_id}:
+ * /class-subjects/{classSubject_id}:
  *   get:
  *     summary: Get a class subject by ID
  *     tags: [ClassSubjects]
@@ -45,7 +45,7 @@ router.get('/:classSubject_id', classSubjectController.getClassSubjectById);
 
 /**
  * @swagger
- * /api/class-subjects:
+ * /class-subjects:
  *   post:
  *     summary: Create a new class subject
  *     tags: [ClassSubjects]
@@ -70,7 +70,7 @@ router.post('/', classSubjectController.createClassSubject);
 
 /**
  * @swagger
- * /api/class-subjects/{classSubject_id}:
+ * /class-subjects/{classSubject_id}:
  *   put:
  *     summary: Update a class subject
  *     tags: [ClassSubjects]
@@ -104,7 +104,7 @@ router.put('/:classSubject_id', classSubjectController.updateClassSubject);
 
 /**
  * @swagger
- * /api/class-subjects/{classSubject_id}:
+ * /class-subjects/{classSubject_id}:
  *   delete:
  *     summary: Delete a class subject
  *     tags: [ClassSubjects]
@@ -125,7 +125,7 @@ router.delete('/:classSubject_id', classSubjectController.deleteClassSubject);
 
 /**
  * @swagger
- * /api/class-subjects/teacher/{teacherId}:
+ * /class-subjects/teacher/{teacherId}:
  *   get:
  *     summary: Get all class subjects by teacher ID
  *     tags: [ClassSubjects]
@@ -144,7 +144,7 @@ router.get('/teacher/:teacherId', classSubjectController.getClassSubjectByTeache
 
 /**
  * @swagger
- * /api/class-subjects/class/{classId}:
+ * /class-subjects/class/{classId}:
  *   get:
  *     summary: Get all class subjects by class ID
  *     tags: [ClassSubjects]

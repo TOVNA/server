@@ -41,7 +41,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/classes:
+ * /classes:
  *   get:
  *     summary: Get all school classes
  *     tags: [Classes]
@@ -61,7 +61,7 @@ router.get('/', schoolClassController.getAllClasses);
 
 /**
  * @swagger
- * /api/classes/{id}:
+ * /classes/{id}:
  *   get:
  *     summary: Get a class by ID
  *     tags: [Classes]
@@ -88,7 +88,7 @@ router.get('/:id', schoolClassController.getClassById);
 
 /**
  * @swagger
- * /api/classes:
+ * /classes:
  *   post:
  *     summary: Create a new school class
  *     tags: [Classes]
@@ -114,7 +114,7 @@ router.post('/', schoolClassController.createClass);
 
 /**
  * @swagger
- * /api/classes/{id}:
+ * /classes/{id}:
  *   put:
  *     summary: Update a school class by ID
  *     tags: [Classes]
@@ -147,7 +147,7 @@ router.put('/:id', schoolClassController.updateClass);
 
 /**
  * @swagger
- * /api/classes/{id}:
+ * /classes/{id}:
  *   delete:
  *     summary: Delete a school class by ID
  *     tags: [Classes]
@@ -170,7 +170,7 @@ router.delete('/:id', schoolClassController.deleteClass);
 
 /**
  * @swagger
- * /api/classes/homeroomTeacher/{id}:
+ * /classes/homeroomTeacher/{id}:
  *   get:
  *     summary: Get class by homeroom teacher ID
  *     tags: [Classes]
@@ -197,7 +197,7 @@ router.get('/homeroomTeacher/:id', schoolClassController.getClassByHomeroomTeach
 
 /**
  * @swagger
- * /api/classes/student/{id}:
+ * /classes/student/{id}:
  *   get:
  *     summary: Get class by student ID
  *     tags: [Classes]
