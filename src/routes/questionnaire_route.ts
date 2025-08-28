@@ -12,7 +12,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/questionnaires:
+ * /questionnaires:
  *   get:
  *     summary: Get all questionnaires
  *     tags: [Questionnaires]
@@ -24,7 +24,7 @@ router.get('/', questionnaireController.getAllQuestionnaires);
 
 /**
  * @swagger
- * /api/questionnaires/{id}:
+ * /questionnaires/{id}:
  *   get:
  *     summary: Get a questionnaire by ID
  *     tags: [Questionnaires]
@@ -45,7 +45,7 @@ router.get('/:id', questionnaireController.getQuestionnaireById);
 
 /**
  * @swagger
- * /api/questionnaires:
+ * /questionnaires:
  *   post:
  *     summary: Create a new questionnaire
  *     tags: [Questionnaires]
@@ -79,7 +79,7 @@ router.post('/', questionnaireController.createQuestionnaire);
 
 /**
  * @swagger
- * /api/questionnaires/{id}:
+ * /questionnaires/{id}:
  *   put:
  *     summary: Update a questionnaire
  *     tags: [Questionnaires]
@@ -106,7 +106,7 @@ router.put('/:id', questionnaireController.updateQuestionnaire);
 
 /**
  * @swagger
- * /api/questionnaires/{id}:
+ * /questionnaires/{id}:
  *   delete:
  *     summary: Delete a questionnaire
  *     tags: [Questionnaires]
@@ -127,7 +127,7 @@ router.delete('/:id', questionnaireController.deleteQuestionnaire);
 
 /**
  * @swagger
- * /api/questionnaires/{id}/questions/{questionId}:
+ * /questionnaires/{id}/questions/{questionId}:
  *   post:
  *     summary: Add a question to a questionnaire
  *     tags: [Questionnaires]
@@ -154,7 +154,7 @@ router.delete('/:id', questionnaireController.deleteQuestionnaire);
 
 /**
  * @swagger
- * /api/questionnaires/{id}/questions/{questionId}:
+ * /questionnaires/{id}/questions/{questionId}:
  *   delete:
  *     summary: Remove a question from a questionnaire
  *     tags: [Questionnaires]
@@ -181,7 +181,7 @@ router.delete('/:id', questionnaireController.deleteQuestionnaire);
 
 /**
  * @swagger
- * /api/questionnaires/target/{role}:
+ * /questionnaires/target/{role}:
  *   get:
  *     summary: Get questionnaires by target role
  *     tags: [Questionnaires]

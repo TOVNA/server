@@ -62,7 +62,7 @@ router.get('/:id', studentsController.getStudentById);
 
 /**
  * @swagger
- * /api/students:
+ * /students:
  *   get:
  *     summary: Get all students
  *     tags: [Students]
