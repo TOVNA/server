@@ -70,38 +70,7 @@ import * as questionnaireService from "../services/questionnaire_service";
         res.status(500).json({ message: 'Internal server error' });
     }
 }
-/*
- const addQuestionToQuestionnaire = async (req: Request, res: Response) => {
-    const { questionnaireId, questionId } = req.body;
-    try {
-        const updatedQuestionnaire = await questionnaireService.addQuestionToQuestionnaire(questionnaireId, questionId);
-        if (!updatedQuestionnaire) {
-            res.status(404).json({ message: 'Questionnaire not found' });
-            return;
-        }
-        res.status(200).json(updatedQuestionnaire);
-    } catch (error) {
-        console.error('Error adding question to questionnaire:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-}
-    */
-  /* 
- const removeQuestionFromQuestionnaire = async (req: Request, res: Response) => {
-    const { questionnaireId, questionId } = req.body;
-    try {
-        const updatedQuestionnaire = await questionnaireService.removeQuestionFromQuestionnaire(questionnaireId, questionId);
-        if (!updatedQuestionnaire) {
-            res.status(404).json({ message: 'Questionnaire not found' });
-            return;
-        }
-        res.status(200).json(updatedQuestionnaire);
-    } catch (error) {
-        console.error('Error removing question from questionnaire:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-}
-    */
+
  const getQuestionnairesByTargetRole = async (req: Request, res: Response) => {
     const targetRole = req.params.role;
   
@@ -155,8 +124,6 @@ export const updateWithQuestions = async (req: Request, res: Response) => {
     createQuestionnaire,
     updateQuestionnaire,
     deleteQuestionnaire,
-   // addQuestionToQuestionnaire,
-   //removeQuestionFromQuestionnaire,
     getQuestionnairesByTargetRole,
     createWithQuestions,
     updateWithQuestions
