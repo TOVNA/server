@@ -7,6 +7,7 @@ import { Document, Types } from "mongoose";
 import TeacherModel from "../models/teachers_model";
 import { OAuth2Client } from "google-auth-library";
 import { Role } from "../types/roles";
+import { TeacherType } from "../types/teacher";
 
 const client = new OAuth2Client();
 
@@ -242,22 +243,22 @@ const refresh = async (req: Request, res: Response) => {
 };
 
 const createTeacher = async (types: Role[], userId: string) => {
-    if (types.includes(Role.Teacher) || types.includes(Role.Homeroom)) {
-      const teacherType: ("profession" | "homeroom")[] = [];
+  if (types.includes(Role.Teacher) || types.includes(Role.Homeroom)) {
+    const teacherType: TeacherType[] = [];
 
-      if (types.includes(Role.Teacher)) {
-        teacherType.push("profession");
-      }
-
-      if (types.includes(Role.Homeroom)) {
-        teacherType.push("homeroom");
-      }
-
-      await TeacherModel.create({
-        userId,
-        types: teacherType,
-      });
+    if (types.includes(Role.Teacher)) {
+      teacherType.push(TeacherType.Profession);
     }
+
+    if (types.includes(Role.Homeroom)) {
+      teacherType.push(TeacherType.Homeroom);
+    }
+
+    await TeacherModel.create({
+      userId,
+      types: teacherType,
+    });
+  }
 };
 
 type Payload = {
