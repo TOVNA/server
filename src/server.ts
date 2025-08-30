@@ -31,15 +31,27 @@ const swaggerOptions: swaggerJSDoc.Options = {
       version: "1.0.0",
       description: "REST server for TOVNA project",
     },
-    servers: [{ url: `http://localhost:${process.env.PORT}` }],
+    servers: [
+	    { url: `http://localhost:${process.env.PORT}` ,
+	       description: "Development Server"},
+            { url: `https://tovna.cs.colman.ac.il:${process.env.HTTPS_PORT}`,
+	      description: "Production Server"}],
   },
   apis: ["./src/routes/*.ts"],
 };
 const specs = swaggerJSDoc(swaggerOptions);
 
-app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.removeHeader("Cross-Origin-Opener-Policy");
+  res.removeHeader("Cross-Origin-Embedder-Policy");
+  next();
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("front"));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/students", studentsRoute);
 app.use("/goals", goalsRoute);
@@ -54,7 +66,9 @@ app.use("/questionnaire", questionnaireRoute);
 app.use("/questionnaire-answer", questionnaireAnswerRoute);
 app.use("/grade", gradeRoutes);
 app.use("/dashboard", dashboardRoute);
-
+app.get('*', (req, res) => {
+  res.sendFile('/home/cs108/tovna-project/server/front/index.html');
+});
 
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
