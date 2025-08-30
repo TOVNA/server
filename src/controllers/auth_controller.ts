@@ -30,6 +30,7 @@ const googleSignin = async (req: Request, res: Response) => {
           last_name: payload?.family_name,
           role: "teacher",
         });
+        createTeacher(req.body.role, user._id.toString());
       }
       const tokens = generateToken(user._id.toString(), user.role);
       if (!tokens) {
@@ -69,22 +70,9 @@ const register = async (req: Request, res: Response) => {
       first_name: req.body.first_name,
       role: req.body.role,
     });
-    if (req.body.role === "teacher" || req.body.role === "homeroom") {
-      const teacherType: ("profession" | "homeroom")[] = [];
 
-      if (req.body.role === "teacher") {
-        teacherType.push("profession");
-      }
+    createTeacher(req.body.role, user._id.toString());
 
-      if (req.body.role === "homeroom") {
-        teacherType.push("homeroom");
-      }
-
-      await TeacherModel.create({
-        userId: user._id,
-        types: teacherType,
-      });
-    }
 
     res.status(200).send(user);
   } catch (err) {
@@ -251,6 +239,25 @@ const refresh = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(400).send(err);
   }
+};
+
+const createTeacher = async (types: Role[], userId: string) => {
+    if (types.includes(Role.Teacher) || types.includes(Role.Homeroom)) {
+      const teacherType: ("profession" | "homeroom")[] = [];
+
+      if (types.includes(Role.Teacher)) {
+        teacherType.push("profession");
+      }
+
+      if (types.includes(Role.Homeroom)) {
+        teacherType.push("homeroom");
+      }
+
+      await TeacherModel.create({
+        userId,
+        types: teacherType,
+      });
+    }
 };
 
 type Payload = {
