@@ -5,7 +5,7 @@ import { CATEGORY_MAP, CATEGORIES, Category } from './categoryMap';
 import PERFORMANCE_KEYWORDS from './performanceKeywords';
 
 /** This function Receives an answer text and returns an array of the formatted words */
-function tokenizeText(text: string): string[] {
+export function tokenizeText(text: string): string[] {
   return text
     .toLowerCase()
     .replace(/[^\w\u0590-\u05FF\s]/g, '')
@@ -15,7 +15,7 @@ function tokenizeText(text: string): string[] {
 
 /** This function Recieves an answer text and returns a score for the answer 
  * The function generates a score using the keywords bank and fuzzy string matching */
-function scorePerformanceFromText(text: string): number {
+export function scorePerformanceFromText(text: string): number {
   const tokens = tokenizeText(text);
   let score = 0;
 
@@ -32,7 +32,7 @@ function scorePerformanceFromText(text: string): number {
 }
 
 /** This function receives a score a nomalizes it to be inside the 1-10 range */
-function normalizeScore(total: number, count: number): number {
+export function normalizeScore(total: number, count: number): number {
   const avg = total / (count || 1);
   const scaled = 5 + avg * 2;
   return Math.max(1, Math.min(10, Math.round(scaled)));
